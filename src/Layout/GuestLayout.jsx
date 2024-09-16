@@ -13,9 +13,9 @@ const GuestLayout = () => {
         </p>
 
         <div className="mt-8 text-center">
-          <Link to={"/signup&login"}>
+          <Link to={"/signup-login"}>
             <button className="bg-orange-400 text-white rounded-md px-14 py-2 font-semibold hover:bg-orange-500 text-lg">
-              Get Started 🎯
+              Get Started🎯
             </button>
           </Link>
         </div>
