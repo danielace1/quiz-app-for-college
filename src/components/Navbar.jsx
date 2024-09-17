@@ -1,4 +1,4 @@
-const Header = () => {
+const Navbar = () => {
   return (
     <header className="bg-orange-100 p-5 flex items-center justify-center space-x-5">
       <img src="/gce-logo.jpeg" alt="GCE TLY" className="size-20" />
@@ -9,4 +9,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default Navbar;
