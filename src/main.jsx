@@ -6,6 +6,7 @@ import GuestLayout from "./Layout/GuestLayout.jsx";
 import SignupAndLogin from "./Pages/Login.jsx";
 import Home from "./Pages/Home.jsx";
 import ErrorPage from "./ErrorPage/Error.jsx";
+import Final from "./Pages/Final.jsx";
 
 const route = createBrowserRouter([
   {
@@ -23,6 +24,10 @@ const route = createBrowserRouter([
       {
         path: "/student/:id",
         element: <Home />,
+      },
+      {
+        path: "/student/:id/final",
+        element: <Final />,
       },
     ],
     errorElement: <ErrorPage />,
