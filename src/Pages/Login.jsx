@@ -101,7 +101,7 @@ const SignupAndLogin = () => {
 
       alert("You have successfully logged in!");
       const userUID = user.uid;
-      navigate(`/user/${userUID}`);
+      navigate(`/student/${userUID}`);
       reset();
     } catch (error) {
       if (error.code === "auth/invalid-credential") {
@@ -297,7 +297,7 @@ const SignupAndLogin = () => {
                   id="username"
                   placeholder="Enter your Name"
                   {...register("username")}
-                  className={`outline-none w-full bg-orange-50 px-5 py-2 rounded-md ${
+                  className={`outline-none w-full bg-orange-50 px-5 py-2 rounded-md capitalize ${
                     errors.username ? "border border-red-500" : ""
                   }`}
                 />

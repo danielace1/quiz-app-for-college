@@ -42,9 +42,11 @@ const Home = () => {
       <div className="mt-5 bg-white rounded-lg max-w-xl mx-auto px-8 py-10">
         <div className="flex items-center justify-between">
           <h1 className="text-xl font-semibold text-orange-500">
-            Hello, {username}
+            Hello, <span className="capitalize">{username}</span>
           </h1>
-          <h2 className="text-orange-500 font-semibold">Roll No. : {rollNo}</h2>
+          <h2 className="text-orange-500 font-semibold">
+            Roll No. : <span className="uppercase">{rollNo}</span>
+          </h2>
         </div>
         <div className="mt-3 flex justify-between">
           <h2 className="text-orange-500 font-semibold underline underline-offset-2">

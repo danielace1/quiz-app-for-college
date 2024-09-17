@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { db, auth } from "../firebase";
+import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import * as XLSX from "xlsx";
-import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 
 const Question = () => {
   const [excelData, setExcelData] = useState([]);
@@ -92,20 +92,39 @@ const Question = () => {
         })
       );
 
-      await setDoc(doc(db, "studentAnswers", user.uid), {
+      const userDoc = doc(db, "studentAnswers", user.uid);
+      const docSnapshot = await getDoc(userDoc);
+      if (docSnapshot.exists()) {
+        const data = docSnapshot.data();
+        const currentDate = new Date();
+
+        if (currentDate < new Date(data.expiryDate)) {
+          alert("You have already submitted this quiz.");
+          return;
+        }
+      }
+
+      await setDoc(userDoc, {
         id,
         answers,
+        // expiryDate: new Date(
+        //   new Date().getTime() + 24 * 60 * 60 * 1000
+        // ).toISOString(),
+        expiryDate: new Date(
+          new Date().getTime() + 5 * 1000 // 5 seconds from now
+        ).toISOString(),
         timestamp: serverTimestamp(),
       });
 
       alert("Your answers have been submitted successfully!");
-      navigate("/student/" + id + "/final");
+      navigate("/student/" + id + "/final", { replace: true });
     } catch (err) {
       alert("An error occurred while submitting your answers: " + err.message);
     }
   };
 
   const selectedOption = selectedOptions[currentIndex] || null;
+  const isOptionSelected = selectedOptions[currentIndex] !== undefined;
 
   if (loading) {
     return <div>Loading questions...</div>;
@@ -168,8 +187,13 @@ const Question = () => {
         <div className="">
           {currentIndex < excelData.length - 1 ? (
             <button
-              className=" bg-orange-400 text-white text-lg font-semibold px-5 py-1.5 hover:bg-orange-500 rounded-lg"
+              className={`bg-orange-400 text-white text-lg font-semibold px-5 py-1.5 rounded-lg ${
+                isOptionSelected
+                  ? "hover:bg-orange-500"
+                  : "opacity-50 cursor-not-allowed"
+              }`}
               onClick={handleNext}
+              disabled={!isOptionSelected}
             >
               Next
             </button>
