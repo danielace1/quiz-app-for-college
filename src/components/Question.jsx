@@ -1,7 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { db, auth } from "../firebase";
-import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  serverTimestamp,
+  setDoc,
+  deleteDoc,
+} from "firebase/firestore";
 import * as XLSX from "xlsx";
 
 const Question = () => {
@@ -107,17 +113,20 @@ const Question = () => {
       await setDoc(userDoc, {
         id,
         answers,
-        // expiryDate: new Date(
-        //   new Date().getTime() + 24 * 60 * 60 * 1000
-        // ).toISOString(),
         expiryDate: new Date(
-          new Date().getTime() + 5 * 1000 // 5 seconds from now
+          new Date().getTime() + 24 * 60 * 60 * 1000
         ).toISOString(),
         timestamp: serverTimestamp(),
       });
 
       alert("Your answers have been submitted successfully!");
       navigate("/student/" + id + "/final", { replace: true });
+
+      // Document deleted after 24 hours from DB
+      setTimeout(async () => {
+        await deleteDoc(userDoc);
+        console.log("Document deleted after 24 hours");
+      }, 24 * 60 * 60 * 1000);
     } catch (err) {
       alert("An error occurred while submitting your answers: " + err.message);
     }

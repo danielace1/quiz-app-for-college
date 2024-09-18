@@ -121,7 +121,7 @@ const SignupAndLogin = () => {
   };
 
   return (
-    <div className="pt-8 bg-orange-100 min-h-screen">
+    <div className="pt-8 pb-10 bg-orange-100 min-h-screen">
       <div className="bg-white flex items-center mx-60 rounded-lg">
         <div className="w-full relative">
           <img
