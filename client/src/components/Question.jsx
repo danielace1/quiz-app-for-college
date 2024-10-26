@@ -1,13 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { db, auth } from "../firebase";
-import {
-  doc,
-  getDoc,
-  serverTimestamp,
-  setDoc,
-  deleteDoc,
-} from "firebase/firestore";
+import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import * as XLSX from "xlsx";
 
 const Question = () => {
@@ -82,6 +76,8 @@ const Question = () => {
       ...prev,
       [currentIndex]: option,
     }));
+
+    console.log(selectedOptions);
   };
 
   const handleSubmit = async () => {
@@ -121,12 +117,6 @@ const Question = () => {
 
       alert("Your answers have been submitted successfully!");
       navigate("/student/" + id + "/final", { replace: true });
-
-      // Document deleted after 24 hours from DB
-      setTimeout(async () => {
-        await deleteDoc(userDoc);
-        console.log("Document deleted after 24 hours");
-      }, 24 * 60 * 60 * 1000);
     } catch (err) {
       alert("An error occurred while submitting your answers: " + err.message);
     }
@@ -169,7 +159,7 @@ const Question = () => {
               name="options"
               value={option}
               checked={selectedOption === option}
-              onChange={() => handleOptionClick(option)}
+              readOnly
               className="h-4 w-4  hover:cursor-pointer"
             />
             <label
