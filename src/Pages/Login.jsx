@@ -1,11 +1,12 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { Eye, EyeOff, Brain, Rocket, Sparkles } from "lucide-react";
 import { auth, db } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
-import { useState } from "react";
 
 const LoginSchema = z.object({
   email: z.string().email({ message: "Email is required" }),
@@ -43,7 +44,7 @@ const LoginPage = () => {
       }
 
       alert("You have successfully logged in!");
-      navigate(`/student/${user.uid}`);
+      navigate(`/me`);
       reset();
     } catch (error) {
       if (
@@ -60,141 +61,154 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="pt-8 pb-10 bg-orange-100 min-h-screen">
-      <div className="bg-white flex items-center mx-60 rounded-lg">
-        <div className="w-full relative">
-          <img
-            src="/quiz-time.png"
-            alt="quiz-img"
-            className="size-96 object-cover mx-auto"
-          />
-        </div>
-
-        <form onSubmit={handleSubmit(login)} className="pr-10 py-8 w-full">
-          <h1 className="text-orange-500 font-semibold text-3xl mb-1">
-            Welcome to Quiz Craze! 🚀
-          </h1>
-          <h2 className="text-orange-600 font-semibold text-lg">Login here!</h2>
-          <hr className="mt-2" />
-
-          <div className="mt-4 space-y-8">
-            <div>
-              <label htmlFor="email" className="block font-semibold mb-2">
-                Enter Your Email :
-              </label>
-              <input
-                type="email"
-                id="email"
-                placeholder="you@awesome.com"
-                {...register("email")}
-                className={`outline-none w-full bg-orange-50 px-5 py-2 rounded-md ${
-                  errors.email ? "border border-red-500" : ""
-                }`}
-              />
-              {errors.email && (
-                <small className="text-red-500 text-sm">
-                  {errors.email.message}
-                </small>
-              )}
-            </div>
-
-            <div className="relative">
-              <label htmlFor="password" className="block font-semibold mb-2">
-                Password :
-              </label>
-              <input
-                type={showPassword ? "text" : "password"}
-                id="password"
-                placeholder="********"
-                {...register("password")}
-                className={`outline-none w-full bg-orange-50 px-5 py-2 rounded-md ${
-                  errors.password ? "border border-red-500" : ""
-                }`}
-              />
-              {errors.password && (
-                <small className="text-red-500 text-sm">
-                  {errors.password.message}
-                </small>
-              )}
-
-              <div
-                className="absolute top-10 right-3"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="22"
-                    height="22"
-                    viewBox="0 0 24 24"
-                    className="text-orange-400 hover:cursor-pointer"
-                  >
-                    <g
-                      fill="none"
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2.5"
-                    >
-                      <path d="M15 12a3 3 0 1 1-6 0a3 3 0 0 1 6 0" />
-                      <path d="M2 12c1.6-4.097 5.336-7 10-7s8.4 2.903 10 7c-1.6 4.097-5.336 7-10 7s-8.4-2.903-10-7" />
-                    </g>
-                  </svg>
-                ) : (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="22"
-                    height="22"
-                    viewBox="0 0 24 24"
-                    className="text-orange-400 hover:cursor-pointer"
-                  >
-                    <g
-                      fill="none"
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeWidth="2.5"
-                    >
-                      <path
-                        strokeLinejoin="round"
-                        d="M10.73 5.073A11 11 0 0 1 12 5c4.664 0 8.4 2.903 10 7a11.6 11.6 0 0 1-1.555 2.788M6.52 6.519C4.48 7.764 2.9 9.693 2 12c1.6 4.097 5.336 7 10 7a10.44 10.44 0 0 0 5.48-1.52m-7.6-7.6a3 3 0 1 0 4.243 4.243"
-                      />
-                      <path d="m4 4l16 16" />
-                    </g>
-                  </svg>
-                )}
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-yellow-100 flex items-center justify-center px-4 py-10">
+      <div className="max-w-5xl w-full bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col md:flex-row items-center md:items-stretch">
+        <div className="md:w-1/2 bg-gradient-to-br from-blue-50 to-yellow-50 p-8 md:p-12 flex flex-col items-center justify-center relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-full opacity-10">
+            <div className="absolute top-10 left-10 w-20 h-20 bg-blue-400 rounded-full"></div>
+            <div className="absolute bottom-10 right-10 w-32 h-32 bg-yellow-400 rounded-full"></div>
+          </div>
+          <div className="relative z-10 text-center">
+            <div className="flex justify-center mb-6">
+              <div className="relative">
+                <div className="p-6 bg-white rounded-2xl shadow-lg">
+                  <Brain size={64} className="text-blue-600" />
+                </div>
+                <div className="absolute -top-2 -right-2">
+                  <Sparkles size={24} className="text-yellow-500" />
+                </div>
               </div>
             </div>
-
-            <div>
-              <button className="w-full bg-orange-400 text-white rounded-md px-4 py-2 font-semibold hover:bg-orange-500 flex items-center justify-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 256 256"
-                  className="mr-2"
-                >
-                  <path
-                    fill="currentColor"
-                    d="m144.49 136.49l-40 40a12 12 0 0 1-17-17L107 140H24a12 12 0 0 1 0-24h83L87.51 96.49a12 12 0 0 1 17-17l40 40a12 12 0 0 1-.02 17M200 28h-64a12 12 0 0 0 0 24h52v152h-52a12 12 0 0 0 0 24h64a12 12 0 0 0 12-12V40a12 12 0 0 0-12-12"
-                  />
-                </svg>
-                Login
-              </button>
-              <div className="flex items-center justify-center mt-4">
-                <span className="text-orange-600 text-sm">
-                  Don't have an account?
-                </span>
-                <a
-                  href="/signup"
-                  className="text-orange-600 text-sm font-semibold ml-2 hover:underline"
-                >
-                  Sign Up
-                </a>
+            <h1 className="text-3xl md:text-4xl font-extrabold text-blue-600 mb-4">
+              Quiz Craze
+              <span className="inline-block ml-2">
+                <Rocket className="inline-block w-8 h-8 text-yellow-500 animate-bounce" />
+              </span>
+            </h1>
+            <p className="text-gray-600 text-lg mb-4">
+              Challenge yourself with exciting quizzes and expand your
+              knowledge!
+            </p>
+            <div className="mt-8 relative">
+              <div className="absolute -top-6 -left-6">
+                <Sparkles size={20} className="text-blue-400" />
+              </div>
+              <div className="absolute -bottom-4 -right-4">
+                <Sparkles size={20} className="text-yellow-500" />
+              </div>
+              <div className="bg-white/50 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-white/20">
+                <p className="text-gray-700 font-medium">
+                  Ready to test your knowledge and have fun while learning?
+                </p>
               </div>
             </div>
           </div>
-        </form>
+        </div>
+
+        <div className="md:w-1/2 w-full p-8 md:p-12 bg-white">
+          <div className="max-w-md mx-auto">
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">
+              Welcome Back!
+            </h2>
+            <p className="text-gray-600 mb-8">Please sign in to your account</p>
+
+            <form onSubmit={handleSubmit(login)} className="space-y-6">
+              <div>
+                <label
+                  htmlFor="email"
+                  className="block font-medium text-gray-700 mb-2"
+                >
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  placeholder="you@example.com"
+                  {...register("email")}
+                  className={`w-full outline-none px-4 py-3 rounded-lg border bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ${
+                    errors.email ? "border-red-500" : "border-gray-300"
+                  }`}
+                />
+                {errors.email && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.email.message}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label
+                  htmlFor="password"
+                  className="block font-medium text-gray-700 mb-2"
+                >
+                  Password
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    placeholder="••••••••"
+                    {...register("password")}
+                    className={`w-full outline-none px-4 py-3 rounded-lg border bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ${
+                      errors.password ? "border-red-500" : "border-gray-300"
+                    }`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  >
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  </button>
+                </div>
+                {errors.password && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.password.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="remember"
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  />
+                  <label
+                    htmlFor="remember"
+                    className="ml-2 block text-sm text-gray-700"
+                  >
+                    Remember me
+                  </label>
+                </div>
+                <button
+                  type="button"
+                  className="text-sm font-medium text-blue-600 hover:text-blue-500"
+                >
+                  Forgot password?
+                </button>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition duration-300 shadow-md hover:shadow-lg flex items-center justify-center space-x-2"
+              >
+                <span>Sign In</span>
+              </button>
+
+              <p className="text-center text-sm text-gray-600">
+                Don't have an account?{" "}
+                <a
+                  href="/signup"
+                  className="font-semibold text-blue-600 hover:text-blue-500"
+                >
+                  Sign up
+                </a>
+              </p>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
   );
