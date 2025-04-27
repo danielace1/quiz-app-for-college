@@ -28,7 +28,7 @@ const App = () => {
           path="/me"
           element={
             <ProtectedRoute>
-              <Navbar />
+              {/* <Navbar /> */}
               <Home />
             </ProtectedRoute>
           }

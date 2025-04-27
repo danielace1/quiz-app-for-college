@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import {
   Brain,
   ClipboardList,
@@ -23,11 +24,11 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
         isSidebarOpen ? "translate-x-0" : "-translate-x-full"
       } lg:translate-x-0 bg-white border-r border-gray-200`}
     >
-      <div className="h-full px-3 py-4 overflow-y-auto">
-        <div className="flex items-center justify-between mb-6 px-3">
+      <div className="h-full mt-2 px-3 md:px-5 py-4 overflow-y-auto">
+        <div className="flex items-center justify-between mb-5">
           <div className="flex items-center">
             <Brain className="h-8 w-8 text-blue-600" />
-            <span className="ml-2 text-xl font-bold text-gray-800">
+            <span className="ml-2 text-xl md:text-2xl font-bold text-gray-800">
               Quiz Craze
             </span>
           </div>
@@ -44,10 +45,10 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
             <li key={item.label}>
               <Link
                 to={item.path}
-                className="flex items-center p-3 text-gray-700 rounded-lg hover:bg-gray-100 group"
+                className="flex items-center py-3 px-2 md:px-0 text-gray-700 rounded-lg hover:bg-gray-100 group"
                 onClick={() => window.innerWidth < 1024 && toggleSidebar()}
               >
-                <item.icon className="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-blue-600" />
+                <item.icon className="w-5 h-5 text-gray-500 transition duration-75 group-hover:text-yellow-500" />
                 <span className="ml-3 flex-1">{item.label}</span>
                 <ChevronRight className="w-4 h-4 text-gray-400" />
               </Link>
@@ -57,6 +58,11 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
       </div>
     </aside>
   );
+};
+
+Sidebar.propTypes = {
+  isSidebarOpen: PropTypes.bool,
+  toggleSidebar: PropTypes.func,
 };
 
 export default Sidebar;
