@@ -44,7 +44,7 @@ const LoginPage = () => {
       }
 
       alert("You have successfully logged in!");
-      navigate(`/me`);
+      navigate(`/test`);
       reset();
     } catch (error) {
       if (

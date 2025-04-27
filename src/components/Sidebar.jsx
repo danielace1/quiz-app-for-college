@@ -12,10 +12,10 @@ import { Link } from "react-router-dom";
 
 const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
   const menuItems = [
-    { icon: ClipboardList, label: "Attempt Test", path: "/test" },
-    { icon: Trophy, label: "Leaderboard", path: "/leaderboard" },
-    { icon: History, label: "History", path: "/history" },
-    { icon: UserCircle, label: "Profile", path: "/profile" },
+    { icon: ClipboardList, label: "Attempt Test", path: "test" },
+    { icon: Trophy, label: "Leaderboard", path: "leaderboard" },
+    { icon: History, label: "History", path: "history" },
+    { icon: UserCircle, label: "Profile", path: "" },
   ];
 
   return (

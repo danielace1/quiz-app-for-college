@@ -1,25 +1,22 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
+import { Outlet } from "react-router-dom";
 
-const DashboardLayout = ({ children }) => {
+const DashboardLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const navigate = useNavigate();
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar
-        toggleSidebar={toggleSidebar}
-        isSidebarOpen={isSidebarOpen}
-        username={"asd"}
-      />
+      <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
       <Sidebar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-      {/* Main content */}
+
       <div className="lg:ml-64 pt-16">
-        <div className="px-4 py-6 lg:px-8">{children}</div>
+        <div className="px-4 py-6 lg:px-8">
+          <Outlet />
+        </div>
       </div>
 
       {/* Mobile sidebar backdrop */}
