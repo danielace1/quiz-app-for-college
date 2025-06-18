@@ -1,14 +1,14 @@
 import PropTypes from "prop-types";
-import { Menu, X, LogOut } from "lucide-react";
-import useAuthStore from "../store/useAuthStore";
+import { Menu, X, LogOut, Shield } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import useAuthStore from "../../store/useAuthStore";
 
-const Navbar = ({ toggleSidebar, isSidebarOpen }) => {
+const AdminNavbar = ({ toggleSidebar, isSidebarOpen }) => {
   const navigate = useNavigate();
   const { user, logout } = useAuthStore();
 
   return (
-    <nav className="bg-white border-b border-gray-200 fixed w-full z-30">
+    <nav className="bg-white border-b border-gray-200 fixed w-full z-30 lg:pl-60">
       <div className="px-4 py-3 lg:px-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
@@ -19,21 +19,20 @@ const Navbar = ({ toggleSidebar, isSidebarOpen }) => {
             >
               {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
-            <div className="flex items-center ml-2 lg:hidden">
-              <span className="md:hidden text-gray-600">
-                👋 Welcome,{" "}
-                <span className="capitalize text-yellow-500 font-semibold">
-                  {user?.username} !
-                </span>
+            <div className="flex items-center ml-2">
+              <Shield className="h-5 w-5 text-blue-600 mr-1" />
+              <span className="text-lg font-bold text-blue-600">
+                Admin Panel
               </span>
             </div>
           </div>
+
           <div className="flex items-center gap-x-3">
             <div>
-              <span className="hidden md:block text-gray-600">
-                👋 Welcome,{" "}
-                <span className="capitalize text-yellow-500 font-semibold">
-                  {user?.username} !
+              <span className="text-sm text-gray-600 hidden md:block">
+                🛡️ Hello,{" "}
+                <span className="capitalize text-blue-600 font-semibold">
+                  {user?.username}!
                 </span>
               </span>
             </div>
@@ -53,10 +52,9 @@ const Navbar = ({ toggleSidebar, isSidebarOpen }) => {
   );
 };
 
-Navbar.propTypes = {
+AdminNavbar.propTypes = {
   toggleSidebar: PropTypes.func,
   isSidebarOpen: PropTypes.bool,
-  username: PropTypes.string,
 };
 
-export default Navbar;
+export default AdminNavbar;

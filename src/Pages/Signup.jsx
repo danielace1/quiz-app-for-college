@@ -14,8 +14,9 @@ const SignupSchema = z
       .string()
       .min(3, { message: "Name should be at least 3 characters" }),
     regNo: z
-      .string()
-      .max(12, { message: "Register No. should not exceed 12 characters" }),
+      .number({ invalid_type_error: "Register Number is required" })
+      .min(1, { message: "Register Number is required" })
+      .max(12, { message: "Register Number should not exceed 12 characters" }),
     email: z.string().email({ message: "Email is required" }),
     password: z
       .string()
@@ -118,7 +119,7 @@ const SignupPage = () => {
         <div className="md:w-1/2 w-full p-8 md:p-12 bg-white">
           <div className="max-w-md mx-auto">
             <h2 className="text-2xl font-bold text-gray-800 mb-2">
-              Get Started !
+              🚀 Get Started !
             </h2>
             <p className="text-gray-600 mb-8">Create your account</p>
 
@@ -135,7 +136,7 @@ const SignupPage = () => {
                   id="username"
                   placeholder="John Doe"
                   {...register("username")}
-                  className={`w-full outline-none px-4 py-3 rounded-lg border bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ${
+                  className={`w-full outline-none px-4 py-2.5 rounded-lg border bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ${
                     errors.username ? "border-red-500" : "border-gray-300"
                   }`}
                 />
@@ -157,8 +158,8 @@ const SignupPage = () => {
                   type="number"
                   id="regNo"
                   placeholder="Enter your register number"
-                  {...register("regNo")}
-                  className={`w-full outline-none px-4 py-3 rounded-lg border bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ${
+                  {...register("regNo", { valueAsNumber: true })}
+                  className={`w-full outline-none px-4 py-2.5 rounded-lg border bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ${
                     errors.regNo ? "border-red-500" : "border-gray-300"
                   }`}
                 />
@@ -181,7 +182,7 @@ const SignupPage = () => {
                   id="email"
                   placeholder="you@awesome.com"
                   {...register("email")}
-                  className={`w-full outline-none px-4 py-3 rounded-lg border bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ${
+                  className={`w-full outline-none px-4 py-2.5 rounded-lg border bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ${
                     errors.email ? "border-red-500" : "border-gray-300"
                   }`}
                 />
@@ -205,7 +206,7 @@ const SignupPage = () => {
                     id="password"
                     placeholder="••••••••"
                     {...register("password")}
-                    className={`w-full outline-none px-4 py-3 rounded-lg border bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ${
+                    className={`w-full outline-none px-4 py-2.5 rounded-lg border bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ${
                       errors.password ? "border-red-500" : "border-gray-300"
                     }`}
                   />
@@ -237,7 +238,7 @@ const SignupPage = () => {
                     id="cpassword"
                     placeholder="••••••••"
                     {...register("cpassword")}
-                    className={`w-full outline-none px-4 py-3 rounded-lg border bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ${
+                    className={`w-full outline-none px-4 py-2.5 rounded-lg border bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ${
                       errors.cpassword ? "border-red-500" : "border-gray-300"
                     }`}
                   />

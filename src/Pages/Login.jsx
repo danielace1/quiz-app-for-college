@@ -36,15 +36,21 @@ const LoginPage = () => {
       const user = userCredential.user;
 
       const userDoc = await getDoc(doc(db, "users", user.uid));
-      const userData = userDoc.data();
-
-      if (userData.role !== "user") {
-        alert("You are not authorized to access this page.");
+      if (!userDoc.exists()) {
+        alert("User record not found. Contact support team.");
         return;
       }
 
+      const userData = userDoc.data();
+
+      if (userData.role === "user") {
+        navigate(`/me`);
+      } else if (userData.role === "admin") {
+        navigate(`/admin`);
+      }
+
       alert("You have successfully logged in!");
-      navigate(`/test`);
+
       reset();
     } catch (error) {
       if (
@@ -96,7 +102,7 @@ const LoginPage = () => {
               <div className="absolute -bottom-4 -right-4">
                 <Sparkles size={20} className="text-yellow-500" />
               </div>
-              <div className="bg-white/50 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-white/20">
+              <div className="bg-white/55 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-white/20">
                 <p className="text-gray-700 font-medium">
                   Ready to test your knowledge and have fun while learning?
                 </p>
@@ -108,7 +114,7 @@ const LoginPage = () => {
         <div className="md:w-1/2 w-full p-8 md:p-12 bg-white">
           <div className="max-w-md mx-auto">
             <h2 className="text-2xl font-bold text-gray-800 mb-2">
-              Welcome Back!
+              👋 Welcome Back!
             </h2>
             <p className="text-gray-600 mb-8">Please sign in to your account</p>
 
@@ -125,7 +131,7 @@ const LoginPage = () => {
                   id="email"
                   placeholder="you@example.com"
                   {...register("email")}
-                  className={`w-full outline-none px-4 py-3 rounded-lg border bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ${
+                  className={`w-full outline-none px-4 py-2.5 rounded-lg border bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ${
                     errors.email ? "border-red-500" : "border-gray-300"
                   }`}
                 />
@@ -149,7 +155,7 @@ const LoginPage = () => {
                     id="password"
                     placeholder="••••••••"
                     {...register("password")}
-                    className={`w-full outline-none px-4 py-3 rounded-lg border bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ${
+                    className={`w-full outline-none px-4 py-2.5 rounded-lg border bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ${
                       errors.password ? "border-red-500" : "border-gray-300"
                     }`}
                   />

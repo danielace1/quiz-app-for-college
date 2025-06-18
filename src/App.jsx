@@ -6,11 +6,19 @@ import useAuthStore from "./store/useAuthStore";
 import Login from "./Pages/Login";
 import Signup from "./Pages/Signup";
 import ErrorPage from "./ErrorPage/Error";
+
+// User
 import DashboardLayout from "./Pages/DashboardLayout";
 import Test from "./Pages/Test";
 import Leaderboard from "./Pages/Leaderboard";
 import History from "./Pages/History";
 import Profile from "./Pages/Profile";
+
+// Admin
+import ProtectedAdminRoute from "./components/Admin/ProtectedAdminRoute";
+import AdminDashboardLayout from "./Pages/Admin/AdminDashboardLayout";
+import AdminDashboard from "./Pages/Admin/AdminDashboard";
+import ManageTests from "./Pages/Admin/ManageTests";
 
 const App = () => {
   const initAuth = useAuthStore((state) => state.initAuth);
@@ -25,6 +33,8 @@ const App = () => {
         <Route path="/" element={<GuestLayout />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+
+        {/* User */}
         <Route
           path="/me"
           element={
@@ -39,6 +49,18 @@ const App = () => {
           <Route path="" element={<Profile />} />
         </Route>
 
+        {/* Admin */}
+        <Route
+          path="/admin"
+          element={
+            <ProtectedAdminRoute>
+              <AdminDashboardLayout />
+            </ProtectedAdminRoute>
+          }
+        >
+          <Route index element={<AdminDashboard />} />
+          <Route path="tests" element={<ManageTests />} />
+        </Route>
         <Route path="*" element={<ErrorPage />} />
       </Routes>
     </>
