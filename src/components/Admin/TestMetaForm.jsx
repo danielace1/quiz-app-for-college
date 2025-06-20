@@ -1,10 +1,12 @@
 import Proptypes from "prop-types";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { getDocs, query, where, collection } from "firebase/firestore";
 import { db } from "../../firebase";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useTestStore from "../../store/testStore";
+import { generateTestCode } from "../../utils/generateTestCode";
 
 const testMetaSchema = z.object({
   subjectName: z.string().min(3, "Subject name must be at least 3 characters"),
@@ -20,6 +22,8 @@ const testMetaSchema = z.object({
 });
 
 const TestMetaForm = ({ onNext }) => {
+  const [generatedCode, setGeneratedCode] = useState("");
+
   const setTestMeta = useTestStore((state) => state.setTestMeta);
   const testMeta = useTestStore((state) => state.testMeta);
   const resetTestMeta = useTestStore((state) => state.resetTest);
@@ -29,6 +33,7 @@ const TestMetaForm = ({ onNext }) => {
     handleSubmit,
     formState: { errors },
     reset,
+    setValue,
   } = useForm({
     resolver: zodResolver(testMetaSchema),
     defaultValues: testMeta || {
@@ -39,6 +44,28 @@ const TestMetaForm = ({ onNext }) => {
       testCode: "",
     },
   });
+
+  useEffect(() => {
+    const checkAndSetUniqueCode = async () => {
+      let unique = false;
+      let code = "";
+
+      while (!unique) {
+        code = generateTestCode();
+
+        const q = query(collection(db, "tests"), where("testCode", "==", code));
+        const snapshot = await getDocs(q);
+
+        if (snapshot.empty) {
+          unique = true;
+          setGeneratedCode(code);
+          setValue("testCode", code);
+        }
+      }
+    };
+
+    checkAndSetUniqueCode();
+  }, []);
 
   const submitMeta = async (data) => {
     try {
@@ -168,6 +195,7 @@ const TestMetaForm = ({ onNext }) => {
               errors.testCode ? "border-red-500" : "border-gray-300"
             }`}
             placeholder="Eg: OOP123"
+            defaultValue={generatedCode}
           />
           {errors.testCode && (
             <p className="text-sm text-red-500 mt-1">
@@ -186,7 +214,7 @@ const TestMetaForm = ({ onNext }) => {
           </button>
           <button
             type="submit"
-            className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 transition text-white rounded-lg font-semibold"
+            className="w-full outline-none py-2.5 bg-blue-600 hover:bg-blue-700 transition text-white rounded-lg font-semibold"
           >
             Next : Add Questions
           </button>

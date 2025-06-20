@@ -1,15 +1,18 @@
 import Proptypes from "prop-types";
 import { useForm, useFieldArray } from "react-hook-form";
 import { useEffect, useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import useTestStore from "../../store/testStore";
 import { db } from "../../firebase/index";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 
 const capitalizeFirst = (str) => str.charAt(0).toUpperCase() + str.slice(1);
+const QUESTIONS_PER_PAGE = 5;
 
 const QuestionForm = ({ onBack }) => {
   const [isHydrated, setIsHydrated] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+
   const { testMeta, resetTest, questionFormData, setQuestionFormData } =
     useTestStore();
 
@@ -33,10 +36,20 @@ const QuestionForm = ({ onBack }) => {
     },
   });
 
+  const totalPages = Math.ceil(
+    (testMeta?.totalQuestions || 1) / QUESTIONS_PER_PAGE
+  );
+  const startIndex = (currentPage - 1) * QUESTIONS_PER_PAGE;
+  const endIndex = startIndex + QUESTIONS_PER_PAGE;
+
   const { fields } = useFieldArray({
     control,
     name: "questions",
   });
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [currentPage]);
 
   useEffect(() => {
     if (questionFormData && !isHydrated) {
@@ -160,8 +173,9 @@ const QuestionForm = ({ onBack }) => {
         Add Questions for {testMeta?.subjectName}
       </h2>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-        {fields.map((field, index) => {
-          const question = watch(`questions.${index}`);
+        {fields.slice(startIndex, endIndex).map((field, index) => {
+          const globalIndex = startIndex + index;
+          const question = watch(`questions.${globalIndex}`);
 
           return (
             <div
@@ -169,10 +183,10 @@ const QuestionForm = ({ onBack }) => {
               className="space-y-4 p-4 border rounded-lg bg-white shadow"
             >
               <label className="block mb-1 font-medium text-gray-700">
-                # Question {index + 1}
+                # Question {globalIndex + 1}
               </label>
               <select
-                {...register(`questions.${index}.type`)}
+                {...register(`questions.${globalIndex}.type`)}
                 className="outline-none py-1 px-1.5 rounded-md border bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
               >
                 <option value="mcq">MCQ</option>
@@ -180,10 +194,10 @@ const QuestionForm = ({ onBack }) => {
               </select>
               <input
                 type="text"
-                {...register(`questions.${index}.question`)}
+                {...register(`questions.${globalIndex}.question`)}
                 onBlur={(e) =>
                   setValue(
-                    `questions.${index}.question`,
+                    `questions.${globalIndex}.question`,
                     capitalizeFirst(e.target.value)
                   )
                 }
@@ -200,7 +214,7 @@ const QuestionForm = ({ onBack }) => {
                         type="button"
                         onClick={() =>
                           setValue(
-                            `questions.${index}.options`,
+                            `questions.${globalIndex}.options`,
                             Array.from(
                               { length: count },
                               (_, i) => question.options?.[i] || ""
@@ -225,10 +239,12 @@ const QuestionForm = ({ onBack }) => {
                       </label>
                       <input
                         type="text"
-                        {...register(`questions.${index}.options.${optIdx}`)}
+                        {...register(
+                          `questions.${globalIndex}.options.${optIdx}`
+                        )}
                         onBlur={(e) =>
                           setValue(
-                            `questions.${index}.options.${optIdx}`,
+                            `questions.${globalIndex}.options.${optIdx}`,
                             capitalizeFirst(e.target.value)
                           )
                         }
@@ -249,7 +265,9 @@ const QuestionForm = ({ onBack }) => {
                       >
                         <input
                           type="checkbox"
-                          {...register(`questions.${index}.correctAnswers`)}
+                          {...register(
+                            `questions.${globalIndex}.correctAnswers`
+                          )}
                           value={optIdx}
                           className="cursor-pointer"
                         />
@@ -265,10 +283,10 @@ const QuestionForm = ({ onBack }) => {
                   <label className="block text-sm mb-2">Correct Answer</label>
                   <input
                     type="text"
-                    {...register(`questions.${index}.blankAnswer`)}
+                    {...register(`questions.${globalIndex}.blankAnswer`)}
                     onBlur={(e) =>
                       setValue(
-                        `questions.${index}.blankAnswer`,
+                        `questions.${globalIndex}.blankAnswer`,
                         capitalizeFirst(e.target.value)
                       )
                     }
@@ -280,6 +298,54 @@ const QuestionForm = ({ onBack }) => {
             </div>
           );
         })}
+
+        <div className="flex items-center justify-center gap-6 mt-10">
+          <button
+            type="button"
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            className={`flex items-center gap-2 px-5 py-2 rounded-lg border font-semibold transition ${
+              currentPage === 1
+                ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                : "bg-blue-600 text-white hover:bg-blue-700"
+            }`}
+          >
+            <ChevronLeft className="w-4 h-4" />
+            Previous
+          </button>
+
+          <span className="font-medium text-gray-700">
+            Page <span className="text-blue-600">{currentPage}</span> of{" "}
+            <span className="text-blue-600">{totalPages}</span>
+          </span>
+
+          <button
+            type="button"
+            disabled={currentPage === totalPages}
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+            }
+            className={`flex items-center gap-2 px-5 py-2 rounded-lg border font-semibold transition ${
+              currentPage === totalPages
+                ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                : "bg-blue-600 text-white hover:bg-blue-700"
+            }`}
+          >
+            Next
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+
+        <div className="mt-6 text-center text-sm text-gray-500">
+          <p>
+            Total Questions:{" "}
+            <span className="font-medium">{testMeta?.totalQuestions || 1}</span>
+          </p>
+          <p>
+            Questions per Page:{" "}
+            <span className="font-medium">{QUESTIONS_PER_PAGE}</span>
+          </p>
+        </div>
 
         <div className="flex justify-between items-center">
           <button
