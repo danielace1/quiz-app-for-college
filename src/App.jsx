@@ -1,7 +1,8 @@
 import { useEffect } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import GuestLayout from "./Layout/GuestLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Loader from "./components/Loader";
 import useAuthStore from "./store/useAuthStore";
 import Login from "./Pages/Login";
 import Signup from "./Pages/Signup";
@@ -22,10 +23,29 @@ import ManageTests from "./Pages/Admin/ManageTests";
 
 const App = () => {
   const initAuth = useAuthStore((state) => state.initAuth);
+  const authLoading = useAuthStore((state) => state.authLoading);
+  const user = useAuthStore((state) => state.user);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     initAuth();
   }, [initAuth]);
+
+  useEffect(() => {
+    if (!authLoading && user) {
+      if (
+        location.pathname === "/" ||
+        location.pathname === "/login" ||
+        location.pathname === "/signup"
+      ) {
+        const isAdmin = user?.role === "admin";
+        navigate(isAdmin ? "/admin" : "/me");
+      }
+    }
+  }, [authLoading, user, navigate, location]);
+
+  if (authLoading) return <Loader />;
 
   return (
     <>
