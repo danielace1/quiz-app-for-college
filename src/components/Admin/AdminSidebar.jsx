@@ -12,7 +12,9 @@ import {
 
 const menuItems = [
   { label: "Dashboard", icon: LayoutDashboard, path: "/admin" },
-  { label: "Manage Tests", icon: FilePlus, path: "/admin/tests" },
+  { label: "Create Test", icon: FilePlus, path: "/admin/createtest" },
+  { label: "All Tests", icon: FilePlus, path: "/admin/tests" },
+  { label: "Leaderboard", icon: LayoutDashboard, path: "/admin/leaderboard" },
   { label: "Manage Students", icon: Users, path: "/admin/students" },
   { label: "Settings", icon: Settings, path: "/admin/settings" },
 ];
@@ -27,7 +29,6 @@ const AdminSidebar = ({ isSidebarOpen, toggleSidebar }) => {
       } lg:translate-x-0 bg-white border-r border-gray-200`}
     >
       <div className="h-full mt-2 px-3 md:px-5 py-4 overflow-y-auto">
-        {/* Header */}
         <div className="flex items-center justify-between mb-5">
           <Link to="/admin">
             <div className="flex items-center">
@@ -46,7 +47,6 @@ const AdminSidebar = ({ isSidebarOpen, toggleSidebar }) => {
           </button>
         </div>
 
-        {/* Menu items */}
         <ul className="space-y-2">
           {menuItems.map((item) => (
             <li key={item.label}>

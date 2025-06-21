@@ -1,10 +1,11 @@
 import Proptypes from "prop-types";
 import { useForm, useFieldArray } from "react-hook-form";
 import { useEffect, useState } from "react";
-import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 import useTestStore from "../../store/testStore";
 import { db } from "../../firebase/index";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import PreviewQuestions from "../../Pages/Admin/PreviewQuestions";
 
 const capitalizeFirst = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 const QUESTIONS_PER_PAGE = 5;
@@ -12,6 +13,7 @@ const QUESTIONS_PER_PAGE = 5;
 const QuestionForm = ({ onBack }) => {
   const [isHydrated, setIsHydrated] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isPreviewing, setIsPreviewing] = useState(false);
 
   const { testMeta, resetTest, questionFormData, setQuestionFormData } =
     useTestStore();
@@ -154,10 +156,20 @@ const QuestionForm = ({ onBack }) => {
     }
   };
 
+  if (isPreviewing) {
+    return (
+      <PreviewQuestions
+        questions={watch("questions")}
+        onBack={() => setIsPreviewing(false)}
+        onConfirm={handleSubmit(onSubmit)}
+      />
+    );
+  }
+
   if (!isHydrated) return null;
 
   return (
-    <div className="px-2 pt-6 lg:pt-10 lg:px-8 max-w-4xl mx-auto">
+    <div className="px-2 pt-6 py-3 lg:pt-10 lg:px-8 max-w-4xl mx-auto">
       <div className="mb-4 -ml-2">
         <button
           onClick={onBack}
@@ -299,12 +311,12 @@ const QuestionForm = ({ onBack }) => {
           );
         })}
 
-        <div className="flex items-center justify-center gap-6 mt-10">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-10">
           <button
             type="button"
             disabled={currentPage === 1}
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            className={`flex items-center gap-2 px-5 py-2 rounded-lg border font-semibold transition ${
+            className={`flex items-center justify-center gap-2 px-4 py-2 w-full sm:w-auto rounded-md text-sm font-semibold transition ${
               currentPage === 1
                 ? "bg-gray-200 text-gray-400 cursor-not-allowed"
                 : "bg-blue-600 text-white hover:bg-blue-700"
@@ -314,7 +326,7 @@ const QuestionForm = ({ onBack }) => {
             Previous
           </button>
 
-          <span className="font-medium text-gray-700">
+          <span className="text-sm font-medium text-gray-700 text-center">
             Page <span className="text-blue-600">{currentPage}</span> of{" "}
             <span className="text-blue-600">{totalPages}</span>
           </span>
@@ -325,7 +337,7 @@ const QuestionForm = ({ onBack }) => {
             onClick={() =>
               setCurrentPage((prev) => Math.min(prev + 1, totalPages))
             }
-            className={`flex items-center gap-2 px-5 py-2 rounded-lg border font-semibold transition ${
+            className={`flex items-center justify-center gap-2 px-4 py-2 w-full sm:w-auto rounded-md text-sm font-semibold transition ${
               currentPage === totalPages
                 ? "bg-gray-200 text-gray-400 cursor-not-allowed"
                 : "bg-blue-600 text-white hover:bg-blue-700"
@@ -336,7 +348,7 @@ const QuestionForm = ({ onBack }) => {
           </button>
         </div>
 
-        <div className="mt-6 text-center text-sm text-gray-500">
+        <div className="mt-4 text-center text-sm text-gray-500 space-y-1">
           <p>
             Total Questions:{" "}
             <span className="font-medium">{testMeta?.totalQuestions || 1}</span>
@@ -347,19 +359,20 @@ const QuestionForm = ({ onBack }) => {
           </p>
         </div>
 
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mt-8">
           <button
             type="button"
             onClick={handleClear}
-            className="px-4 py-2 border border-red-600 text-red-600 rounded-lg font-medium hover:bg-red-50 transition"
+            className="w-full sm:w-auto px-4 py-2 border border-red-600 text-red-600 rounded-md font-medium hover:bg-red-50 transition text-sm"
           >
             Clear All
           </button>
           <button
-            type="submit"
-            className="px-6 py-2.5 bg-green-600 hover:bg-green-700 transition text-white rounded-lg font-semibold"
+            type="button"
+            onClick={() => setIsPreviewing(true)}
+            className="w-full sm:w-auto px-6 py-2.5 bg-yellow-500 hover:bg-yellow-600 transition text-white rounded-md font-semibold text-sm"
           >
-            Submit Test
+            Preview Test
           </button>
         </div>
       </form>

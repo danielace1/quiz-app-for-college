@@ -19,7 +19,9 @@ import Profile from "./Pages/Profile";
 import ProtectedAdminRoute from "./components/Admin/ProtectedAdminRoute";
 import AdminDashboardLayout from "./Pages/Admin/AdminDashboardLayout";
 import AdminDashboard from "./Pages/Admin/AdminDashboard";
-import ManageTests from "./Pages/Admin/ManageTests";
+import CreateTest from "./Pages/Admin/CreateTest";
+import ViewEditTest from "./Pages/Admin/ViewEditTest";
+import TestList from "./Pages/Admin/TestList";
 
 const App = () => {
   const initAuth = useAuthStore((state) => state.initAuth);
@@ -79,7 +81,9 @@ const App = () => {
           }
         >
           <Route index element={<AdminDashboard />} />
-          <Route path="tests" element={<ManageTests />} />
+          <Route path="createtest" element={<CreateTest />} />
+          <Route path="tests" element={<TestList />} />
+          <Route path="tests/:testId" element={<ViewEditTest />} />
         </Route>
         <Route path="*" element={<ErrorPage />} />
       </Routes>

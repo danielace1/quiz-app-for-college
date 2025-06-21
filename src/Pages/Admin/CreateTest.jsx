@@ -3,7 +3,7 @@ import useTestStore from "../../store/testStore";
 import TestMetaForm from "../../components/Admin/TestMetaForm";
 import QuestionForm from "../../components/Admin/QuestionForm";
 
-const ManageTests = () => {
+const CreateTest = () => {
   const testMeta = useTestStore((state) => state.testMeta);
   const [step, setStep] = useState("meta");
 
@@ -26,4 +26,4 @@ const ManageTests = () => {
   );
 };
 
-export default ManageTests;
+export default CreateTest;

@@ -204,17 +204,17 @@ const TestMetaForm = ({ onNext }) => {
           )}
         </div>
 
-        <div className="flex justify-between items-center gap-4 pt-2">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-y-4 sm:gap-x-4 pt-4">
           <button
             type="button"
             onClick={handleClear}
-            className="w-full py-2.5 border border-red-600 text-red-600 rounded-lg font-semibold hover:bg-red-50 transition"
+            className="w-full sm:w-auto px-6 py-2.5 border border-red-600 text-red-600 rounded-md font-semibold hover:bg-red-50 transition text-sm"
           >
             Clear
           </button>
           <button
             type="submit"
-            className="w-full outline-none py-2.5 bg-blue-600 hover:bg-blue-700 transition text-white rounded-lg font-semibold"
+            className="w-full sm:w-auto px-6 py-2.5 bg-blue-600 hover:bg-blue-700 transition text-white rounded-md font-semibold text-sm"
           >
             Next : Add Questions
           </button>
