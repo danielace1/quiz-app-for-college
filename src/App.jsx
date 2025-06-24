@@ -22,6 +22,7 @@ import AdminDashboard from "./Pages/Admin/AdminDashboard";
 import CreateTest from "./Pages/Admin/CreateTest";
 import ViewEditTest from "./Pages/Admin/ViewEditTest";
 import TestList from "./Pages/Admin/TestList";
+import UserTest from "./Pages/UserTest";
 
 const App = () => {
   const initAuth = useAuthStore((state) => state.initAuth);
@@ -66,6 +67,7 @@ const App = () => {
           }
         >
           <Route path="test" element={<Test />} />
+          <Route path="test/:testId" element={<UserTest />} />
           <Route path="leaderboard" element={<Leaderboard />} />
           <Route path="history" element={<History />} />
           <Route path="" element={<Profile />} />

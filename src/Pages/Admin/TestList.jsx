@@ -37,12 +37,26 @@ const TestList = () => {
   const handleDelete = async () => {
     const id = deleteTarget;
     setDeleteTarget(null);
-    await deleteDoc(doc(db, "tests", id));
-    const newList = tests.filter((t) => t.id !== id);
-    setTests(newList);
-    setFiltered(newList);
-  };
 
+    try {
+      const questionsRef = collection(db, "tests", id, "questions");
+      const questionsSnap = await getDocs(questionsRef);
+
+      const deletePromises = questionsSnap.docs.map((qDoc) =>
+        deleteDoc(doc(db, "tests", id, "questions", qDoc.id))
+      );
+      await Promise.all(deletePromises);
+
+      await deleteDoc(doc(db, "tests", id));
+
+      const newList = tests.filter((t) => t.id !== id);
+      setTests(newList);
+      setFiltered(newList);
+    } catch (err) {
+      console.error("Error deleting test and its questions:", err);
+      alert("Failed to delete test.");
+    }
+  };
   const handleSearch = (query) => {
     const lower = query.trim().toLowerCase();
     setFiltered(
@@ -88,7 +102,7 @@ const TestList = () => {
           >
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
               <div className="flex-1">
-                <p className="font-medium text-gray-800 group-hover:underline">
+                <p className="font-medium text-gray-800 group-hover:underline mb-1">
                   {start + idx + 1}. {test.subjectName} ({test.subjectCode})
                 </p>
                 <p className="text-sm text-gray-600">

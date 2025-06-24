@@ -80,6 +80,23 @@ const ViewEditTest = () => {
   const handleSaveQuestion = async (questionId) => {
     try {
       const questionRef = doc(db, "tests", testId, "questions", questionId);
+      if (
+        !editedQuestion.question.trim() ||
+        editedQuestion.options.some((opt) => !opt.trim())
+      ) {
+        alert("Please fill in the question and all options.");
+        return;
+      }
+
+      if (
+        editedQuestion.type === "mcq" &&
+        (!editedQuestion.correctAnswers ||
+          editedQuestion.correctAnswers.length === 0)
+      ) {
+        alert("Please select at least one correct answer.");
+        return;
+      }
+
       await updateDoc(questionRef, editedQuestion);
 
       const updatedQuestions = [...questions];
@@ -289,6 +306,28 @@ const ViewEditTest = () => {
                         }}
                         className={inputStyle}
                       />
+                      <label className="inline-flex items-center gap-2 mt-1 text-sm text-gray-700">
+                        <input
+                          type="checkbox"
+                          checked={editedQuestion.correctAnswers?.includes(idx)}
+                          onChange={(e) => {
+                            const updated = [
+                              ...(editedQuestion.correctAnswers || []),
+                            ];
+                            if (e.target.checked) {
+                              updated.push(idx);
+                            } else {
+                              const i = updated.indexOf(idx);
+                              if (i !== -1) updated.splice(i, 1);
+                            }
+                            setEditedQuestion({
+                              ...editedQuestion,
+                              correctAnswers: updated,
+                            });
+                          }}
+                        />
+                        Mark as correct
+                      </label>
                     </div>
                   ))}
 
