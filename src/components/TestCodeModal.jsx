@@ -13,7 +13,8 @@ const TestCodeModal = ({ open, onClose, onSubmit }) => {
     }
   }, [open]);
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e?.preventDefault();
     if (!code.trim()) {
       setError("Test code is required.");
       return;
@@ -26,7 +27,7 @@ const TestCodeModal = ({ open, onClose, onSubmit }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-lg p-6 w-[90%] max-w-md shadow-xl relative animate-fadeIn">
+      <div className="bg-white rounded-lg p-4 md:p-5 w-[90%] max-w-md shadow-xl relative animate-fadeIn">
         <button
           onClick={onClose}
           className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
@@ -38,32 +39,40 @@ const TestCodeModal = ({ open, onClose, onSubmit }) => {
           Enter Test Code
         </h3>
 
-        <input
-          value={code}
-          onChange={(e) => {
-            setCode(e.target.value);
-            setError("");
-          }}
-          placeholder="e.g. ABC123"
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+        <form onSubmit={handleSubmit}>
+          <input
+            value={code}
+            onChange={(e) => {
+              setCode(e.target.value);
+              setError("");
+            }}
+            placeholder="e.g. ABC123"
+            className="w-full px-4 py-2 border border-gray-300 rounded-md outline-none focus:border-blue-500"
+          />
 
-        {error && <p className="text-sm text-red-600 mt-1">{error}</p>}
+          {error && <p className="text-sm text-red-600 mt-1">{error}</p>}
 
-        <div className="mt-5 flex justify-end gap-3">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleSubmit}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md font-medium"
-          >
-            Submit
-          </button>
-        </div>
+          <p className="text-sm text-amber-600 mt-3">
+            ⚠️ Switching tabs will auto-submit the test. So please ensure you
+            complete it in one go.
+          </p>
+
+          <div className="mt-5 flex justify-end gap-3">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md font-medium"
+            >
+              Submit
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

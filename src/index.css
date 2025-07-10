@@ -17,7 +17,7 @@
   animation: fadeIn 0.2s ease-out;
 }
 
-body {
+/* body {
   user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -27,4 +27,4 @@ body {
 .no-copy {
   user-select: none;
   -webkit-user-select: none;
-}
+} */

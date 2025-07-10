@@ -7,13 +7,16 @@ const useTestStore = create(
       testMeta: null,
       questionFormData: null,
 
+      questions: [],
       answers: {},
       currentPage: 0,
-      timeLeft: null,
+      endTime: null,
+      hasHydrated: false,
 
       setTestMeta: (meta) => set({ testMeta: meta }),
       setQuestionFormData: (data) => set({ questionFormData: data }),
 
+      setQuestions: (qs) => set({ questions: qs }),
       setAnswers: (answers) => set({ answers }),
       updateAnswer: (questionId, value) =>
         set((state) => ({
@@ -23,7 +26,9 @@ const useTestStore = create(
           },
         })),
       setCurrentPage: (page) => set({ currentPage: page }),
-      setTimeLeft: (seconds) => set({ timeLeft: seconds }),
+      setEndTime: (endTime) => set({ endTime }),
+
+      setHasHydrated: (value) => set({ hasHydrated: value }),
 
       resetTest: () =>
         set({
@@ -31,7 +36,7 @@ const useTestStore = create(
           questionFormData: null,
           answers: {},
           currentPage: 0,
-          timeLeft: null,
+          endTime: null,
         }),
     }),
     {
@@ -43,8 +48,14 @@ const useTestStore = create(
         questionFormData: state.questionFormData,
         answers: state.answers,
         currentPage: state.currentPage,
-        timeLeft: state.timeLeft,
+        endTime: state.endTime,
+        questions: state.questions,
       }),
+
+      onRehydrateStorage: () => (state, error) => {
+        if (error) console.error("Failed to rehydrate:", error);
+        state?.setHasHydrated(true);
+      },
     }
   )
 );

@@ -1,188 +1,280 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import Countdown from "react-countdown";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc, collection, getDocs, setDoc } from "firebase/firestore";
 import { db } from "../firebase";
-import {
-  doc,
-  getDoc,
-  collection,
-  getDocs,
-  setDoc,
-  query,
-  where,
-  getDocs as getQueryDocs,
-} from "firebase/firestore";
 import useTestStore from "../store/testStore";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import Loader from "../components/Loader";
+import { ChevronLeft, ChevronRight, LogOut } from "lucide-react";
 
-// Replace this with actual user ID from auth
-const userId = "student123";
+const QUESTIONS_PER_PAGE = 5;
 
-const QUESTIONS_PER_PAGE = 10;
-
-const UserTest = () => {
+export default function UserTest() {
   const { testId } = useParams();
   const navigate = useNavigate();
-  const [questions, setQuestions] = useState([]);
+
   const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState(null);
+
+  const initialized = useRef(false);
+  const submitted = useRef(false);
+  const submittedViaTabSwitch = useRef(false);
 
   const {
     testMeta,
+    questions,
     answers,
     currentPage,
-    timeLeft,
+    endTime,
     setTestMeta,
+    setQuestions,
     updateAnswer,
     setCurrentPage,
-    setTimeLeft,
+    setEndTime,
     resetTest,
+    hasHydrated,
   } = useTestStore();
 
-  // Check if already submitted by querying Firestore
-  useEffect(() => {
-    const checkSubmission = async () => {
-      const q = query(
-        collection(db, "results"),
-        where("testId", "==", testId),
-        where("userId", "==", userId)
-      );
-      const snap = await getQueryDocs(q);
-      if (!snap.empty) {
-        alert("You have already submitted this test.");
-        return navigate("/already-submitted");
-      }
-    };
-    checkSubmission();
-  }, [testId, navigate]);
-
-  // Fetch test and questions
-  useEffect(() => {
-    const fetchTest = async () => {
-      try {
-        const testRef = doc(db, "tests", testId);
-        const testSnap = await getDoc(testRef);
-        if (!testSnap.exists()) return navigate("/not-found");
-
-        const data = testSnap.data();
-        setTestMeta(data);
-
-        const qSnap = await getDocs(collection(testRef, "questions"));
-        const qList = qSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-        setQuestions(qList);
-
-        // Set timer after all async done
-        setTimeLeft(data.durationMinutes * 60);
-        setLoading(false);
-      } catch (err) {
-        console.error("Error loading test:", err);
-        navigate("/error");
-      }
-    };
-    fetchTest();
-  }, [testId, navigate, setTestMeta, setTimeLeft]);
-
-  // Timer countdown
-  useEffect(() => {
-    if (timeLeft === null || isNaN(timeLeft)) return;
-    if (timeLeft <= 0) return handleSubmit();
-    const interval = setInterval(() => setTimeLeft((prev) => prev - 1), 1000);
-    return () => clearInterval(interval);
-  }, [timeLeft]);
-
-  // Submit on tab switch
-  useEffect(() => {
-    const handleTabSwitch = () => {
-      if (document.hidden) {
-        alert("Tab switch detected. Submitting test.");
-        handleSubmit();
-      }
-    };
-    document.addEventListener("visibilitychange", handleTabSwitch);
-    return () =>
-      document.removeEventListener("visibilitychange", handleTabSwitch);
-  }, []);
-
-  // Submit handler
   const handleSubmit = useCallback(async () => {
-    const timestamp = new Date().toISOString();
+    if (!userId || submitted.current) return;
+
+    submitted.current = true;
+
     await setDoc(doc(db, "results", `${testId}_${userId}`), {
       testId,
       userId,
-      timestamp,
+      timestamp: new Date().toISOString(),
       answers,
     });
 
+    if (!submittedViaTabSwitch.current) {
+      alert("Test submitted successfully!");
+    }
+
     resetTest();
-
+    setEndTime(null);
     navigate(`/test/${testId}/result`, {
-      state: { meta: testMeta, questions, answers },
+      state: { testMeta, questions, answers },
     });
-  }, [answers, navigate, questions, resetTest, testId, testMeta]);
+  }, [
+    userId,
+    testId,
+    answers,
+    resetTest,
+    navigate,
+    testMeta,
+    questions,
+    setEndTime,
+  ]);
 
-  if (loading || !testMeta || timeLeft === null || isNaN(timeLeft))
-    return <p className="text-center py-10">Loading...</p>;
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(getAuth(), async (user) => {
+      if (!user) {
+        alert("Please login to continue.");
+        return navigate("/login");
+      }
+
+      const uid = user.uid;
+      const resultDoc = await getDoc(doc(db, "results", `${testId}_${uid}`));
+      if (resultDoc.exists()) {
+        alert("You’ve already attended this test.");
+        return navigate("/me/test");
+      }
+
+      setUserId(uid);
+    });
+
+    return unsubscribe;
+  }, [navigate, testId]);
+
+  useEffect(() => {
+    if (!hasHydrated || !userId || !testId || initialized.current) return;
+
+    (async () => {
+      try {
+        const testRef = doc(db, "tests", testId);
+        const snap = await getDoc(testRef);
+
+        if (!snap.exists()) {
+          alert("Test not found");
+          return navigate("/tests");
+        }
+
+        const data = snap.data();
+        setTestMeta(data);
+
+        const qSnap = await getDocs(collection(testRef, "questions"));
+        setQuestions(qSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+
+        const durationMs = data.durationMinutes * 60 * 1000;
+        const now = Date.now();
+
+        if (endTime === null || isNaN(endTime) || endTime < now) {
+          const computedEndTime = now + durationMs;
+          setEndTime(computedEndTime);
+        }
+
+        initialized.current = true;
+        setLoading(false);
+      } catch (err) {
+        console.error(err);
+        navigate("/error");
+      }
+    })();
+  }, [
+    userId,
+    testId,
+    endTime,
+    setEndTime,
+    setTestMeta,
+    navigate,
+    hasHydrated,
+    setQuestions,
+  ]);
+
+  useEffect(() => {
+    const handleTabSwitch = () => {
+      if (document.hidden && !submitted.current) {
+        submittedViaTabSwitch.current = true;
+        alert("You switched tabs. The test has been submitted.");
+        handleSubmit();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleTabSwitch);
+    return () => {
+      document.removeEventListener("visibilitychange", handleTabSwitch);
+    };
+  }, [handleSubmit]);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [currentPage]);
+
+  const handleCountdownComplete = useCallback(() => {
+    handleSubmit();
+  }, [handleSubmit]);
+
+  if (!hasHydrated || loading || !testMeta || typeof endTime !== "number") {
+    return (
+      <div className="min-h-screen flex justify-center items-center">
+        <Loader />
+      </div>
+    );
+  }
 
   const totalPages = Math.ceil(questions.length / QUESTIONS_PER_PAGE);
-  const startIdx = currentPage * QUESTIONS_PER_PAGE;
-  const currentQs = questions.slice(startIdx, startIdx + QUESTIONS_PER_PAGE);
+  const sliceStart = currentPage * QUESTIONS_PER_PAGE;
+  const pageQs = questions.slice(sliceStart, sliceStart + QUESTIONS_PER_PAGE);
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-6 text-gray-800 select-none">
-      {/* Header */}
-      <div className="flex justify-between items-center mb-6 border-b pb-2 sticky top-0 z-20 bg-inherit">
-        <h1 className="text-xl font-bold">
-          {testMeta.subjectName} ({testMeta.subjectCode})
+    <div className="max-w-5xl mx-auto text-gray-800">
+      <div className="py-2 sm:py-4">
+        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-gray-900 mb-1">
+          {testMeta.subjectName}
         </h1>
-        <span className="font-mono text-lg bg-black text-white px-3 py-1 rounded">
-          {String(Math.floor(timeLeft / 60)).padStart(2, "0")}:
-          {String(timeLeft % 60).padStart(2, "0")}
-        </span>
+        <p className="text-sm sm:text-base text-gray-500">
+          {testMeta.subjectCode}
+        </p>
       </div>
 
-      {/* Questions */}
-      <div className="space-y-6">
-        {currentQs.map((q, idx) => {
-          const isMultiple = q.correctAnswers?.length > 1;
+      <div className="sticky top-0 z-30 bg-transparent backdrop-blur-sm py-2 mb-4">
+        <div className="flex justify-between items-center px-3 py-2 sm:px-4 rounded-md border border-gray-200">
+          {endTime && (
+            <div className="flex items-center gap-2 py-1">
+              <span className="text-xs sm:text-sm text-gray-700 font-medium">
+                Time Left:
+              </span>
+              <Countdown
+                date={endTime}
+                onComplete={handleCountdownComplete}
+                renderer={({ minutes, seconds }) => (
+                  <div className="font-mono text-xs sm:text-base bg-black text-white px-3 py-0.5 rounded-full shadow animate-pulse tracking-wide min-w-[65px] text-center">
+                    {String(minutes).padStart(2, "0")}:
+                    {String(seconds).padStart(2, "0")}
+                  </div>
+                )}
+              />
+            </div>
+          )}
+
+          <button
+            title="Leave Test"
+            onClick={() => {
+              if (
+                window.confirm(
+                  "Are you sure you want to leave the test? All progress will be lost."
+                )
+              ) {
+                resetTest();
+                setEndTime(null);
+                navigate("/me/test");
+              }
+            }}
+            className="flex items-center gap-2 text-sm sm:text-base font-medium text-red-600 hover:text-white hover:bg-red-600 border border-red-600 px-3 py-1.5 rounded-md transition duration-150"
+          >
+            <LogOut className="w-4 h-4" />
+            <span className="hidden xs:inline">Leave Test</span>
+          </button>
+        </div>
+      </div>
+
+      <div className="mt-6 space-y-7">
+        {pageQs.map((q, idx) => {
           const selected = answers[q.id] || [];
+          const isMultiple = q.correctAnswers?.length > 1;
 
           return (
             <div
               key={q.id}
-              className="bg-white p-5 border shadow rounded no-copy"
+              className="bg-white border rounded-lg shadow-sm p-5 transition hover:shadow-md"
             >
-              <p className="mb-3 font-semibold">
-                Q{startIdx + idx + 1}. {q.question}
+              <p className="text-lg sm:text-xl font-semibold mb-4 leading-relaxed">
+                <span className="text-blue-600 font-bold">
+                  Q{sliceStart + idx + 1}.
+                </span>{" "}
+                {q.question}
               </p>
+
               {q.type === "mcq" ? (
-                q.options.map((opt, optIdx) => (
-                  <label
-                    key={optIdx}
-                    className="flex items-center gap-3 mb-2 cursor-pointer rounded-md border px-3 py-2 transition hover:bg-gray-50"
-                  >
-                    <input
-                      type={isMultiple ? "checkbox" : "radio"}
-                      name={q.id}
-                      checked={selected.includes(optIdx)}
-                      onChange={() =>
-                        updateAnswer(
-                          q.id,
-                          isMultiple
-                            ? selected.includes(optIdx)
-                              ? selected.filter((i) => i !== optIdx)
-                              : [...selected, optIdx]
-                            : [optIdx]
-                        )
-                      }
-                    />
-                    <span className="capitalize">{opt}</span>
-                  </label>
-                ))
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {q.options.map((opt, i) => (
+                    <label
+                      key={i}
+                      className={`flex items-center gap-2 border px-2.5 py-2 rounded-lg cursor-pointer transition hover:bg-gray-50 ${
+                        selected.includes(i)
+                          ? "bg-blue-50 border-blue-500"
+                          : "border-gray-300"
+                      }`}
+                    >
+                      <input
+                        type={isMultiple ? "checkbox" : "radio"}
+                        name={q.id}
+                        checked={selected.includes(i)}
+                        onChange={() =>
+                          updateAnswer(
+                            q.id,
+                            isMultiple
+                              ? selected.includes(i)
+                                ? selected.filter((x) => x !== i)
+                                : [...selected, i]
+                              : [i]
+                          )
+                        }
+                        className="accent-blue-600 w-4 h-4"
+                      />
+                      <span className="text-base">{opt}</span>
+                    </label>
+                  ))}
+                </div>
               ) : (
                 <input
                   type="text"
                   value={selected[0] || ""}
                   onChange={(e) => updateAnswer(q.id, [e.target.value])}
-                  placeholder="Your answer..."
-                  className="w-full border px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Type your answer..."
+                  className="w-full border border-gray-300 px-3 py-2 rounded-md outline-none focus:border-blue-500"
                 />
               )}
             </div>
@@ -190,38 +282,35 @@ const UserTest = () => {
         })}
       </div>
 
-      {/* Navigation */}
-      <div className="flex justify-between items-center mt-8">
+      <div className="flex flex-col sm:flex-row justify-between items-center mt-12 gap-4">
         <button
           onClick={() => setCurrentPage(currentPage - 1)}
           disabled={currentPage === 0}
-          className="flex items-center gap-2 bg-gray-200 px-4 py-2 rounded disabled:opacity-50"
+          className="flex items-center gap-2 px-5 py-2 rounded-md bg-gray-200 hover:bg-gray-300 disabled:opacity-50 transition cursor-pointer disabled:cursor-not-allowed"
         >
-          <ChevronLeft size={20} /> Prev
+          <ChevronLeft className="w-5 h-5" /> Prev
         </button>
 
-        <div className="text-sm text-gray-600">
+        <span className="text-sm text-gray-600">
           Page {currentPage + 1} of {totalPages}
-        </div>
+        </span>
 
-        {currentPage === totalPages - 1 ? (
+        {currentPage + 1 === totalPages ? (
           <button
             onClick={handleSubmit}
-            className="bg-green-600 text-white px-5 py-2 rounded hover:bg-green-700"
+            className="px-5 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md shadow transition"
           >
             Submit Test
           </button>
         ) : (
           <button
             onClick={() => setCurrentPage(currentPage + 1)}
-            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            className="flex items-center gap-2 px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md shadow transition"
           >
-            Next <ChevronRight size={20} />
+            Next <ChevronRight className="w-5 h-5" />
           </button>
         )}
       </div>
     </div>
   );
-};
-
-export default UserTest;
+}

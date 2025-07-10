@@ -14,7 +14,7 @@ const DashboardLayout = () => {
       <Sidebar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
       <div className="lg:ml-64 pt-16">
-        <div className="px-4 py-6 lg:px-8">
+        <div className="px-3 py-6 lg:px-8">
           <Outlet />
         </div>
       </div>
