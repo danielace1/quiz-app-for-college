@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { collection, getDocs, doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import Loader from "../components/Loader";
-import { Trophy, User } from "lucide-react";
+import { Trophy, User, AlertTriangle } from "lucide-react";
 
 const Leaderboard = () => {
   const [leaderboardData, setLeaderboardData] = useState([]);
@@ -122,52 +122,63 @@ const Leaderboard = () => {
         Leaderboard
       </h1>
 
-      {Object.keys(leaderboardData).map((subject, idx) => (
-        <div key={idx} className="mb-10">
-          <h2 className="text-lg md:text-2xl font-semibold mb-4 text-blue-700">
-            {subject}
-          </h2>
-          <div className="overflow-x-auto">
-            <table className="min-w-full border divide-y divide-gray-200 shadow-lg rounded-xl overflow-hidden">
-              <thead className="bg-blue-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
-                    Rank
-                  </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
-                    Student
-                  </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
-                    Marks
-                  </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
-                    Time Taken
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-100">
-                {leaderboardData[subject].map((entry, i) => (
-                  <tr key={i} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 font-bold text-gray-700">
-                      #{i + 1}
-                    </td>
-                    <td className="px-6 py-4 flex items-center gap-2">
-                      <User className="w-4 h-4 text-gray-500" /> {entry.name}
-                    </td>
-                    <td className="px-6 py-4 text-blue-600 font-semibold">
-                      {entry.marks}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">
-                      {Math.floor(entry.timeTaken / 60)}m {entry.timeTaken % 60}
-                      s
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+      {Object.keys(leaderboardData).length === 0 ? (
+        <div className="flex flex-col items-center justify-center text-gray-500 py-20">
+          <AlertTriangle className="w-10 h-10 text-yellow-400 mb-3" />
+          <p className="text-lg font-medium text-center">
+            No results yet.
+            <br />
+            Be the first to take the test!
+          </p>
         </div>
-      ))}
+      ) : (
+        Object.keys(leaderboardData).map((subject, idx) => (
+          <div key={idx} className="mb-10">
+            <h2 className="text-lg md:text-2xl font-semibold mb-4 text-blue-700">
+              {subject}
+            </h2>
+            <div className="overflow-x-auto border rounded-xl">
+              <table className="min-w-full divide-y divide-gray-200 shadow-lg overflow-hidden">
+                <thead className="bg-blue-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+                      Rank
+                    </th>
+                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+                      Student
+                    </th>
+                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+                      Marks
+                    </th>
+                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+                      Time Taken
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-100">
+                  {leaderboardData[subject].map((entry, i) => (
+                    <tr key={i} className="hover:bg-gray-100">
+                      <td className="px-6 py-4 font-bold text-gray-700">
+                        #{i + 1}
+                      </td>
+                      <td className="px-6 py-4 flex items-center gap-2">
+                        <User className="w-4 h-4 text-gray-500" /> {entry.name}
+                      </td>
+                      <td className="px-6 py-4 text-blue-600 font-semibold">
+                        {entry.marks}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-600">
+                        {Math.floor(entry.timeTaken / 60)}m{" "}
+                        {entry.timeTaken % 60}s
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        ))
+      )}
     </div>
   );
 };

@@ -164,6 +164,20 @@ export default function UserTest() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [currentPage]);
 
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (
+        (e.ctrlKey || e.metaKey) &&
+        ["c", "x", "v", "a", "s", "p", "u"].includes(e.key.toLowerCase())
+      ) {
+        e.preventDefault();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   const handleCountdownComplete = useCallback(() => {
     handleSubmit();
   }, [handleSubmit]);
@@ -181,9 +195,14 @@ export default function UserTest() {
   const pageQs = questions.slice(sliceStart, sliceStart + QUESTIONS_PER_PAGE);
 
   return (
-    <div className="max-w-5xl mx-auto text-gray-800">
+    <div
+      className="max-w-5xl mx-auto text-gray-800 select-none"
+      onCopy={(e) => e.preventDefault()}
+      onContextMenu={(e) => e.preventDefault()}
+      style={{ userSelect: "none" }}
+    >
       <div className="py-2 sm:py-4">
-        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-gray-900 mb-1">
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900 mb-1">
           {testMeta.subjectName}
         </h1>
         <p className="text-sm sm:text-base text-gray-500">
