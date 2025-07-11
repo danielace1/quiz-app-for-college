@@ -40,7 +40,12 @@ const Test = () => {
     setSelectedTest(null);
   };
 
-  if (loading) return <Loader />;
+  if (loading)
+    return (
+      <div className="min-h-screen flex justify-center items-center">
+        <Loader />
+      </div>
+    );
 
   return (
     <div className="max-w-5xl mx-auto">

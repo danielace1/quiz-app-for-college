@@ -26,11 +26,13 @@ export default function UserTest() {
     questions,
     answers,
     currentPage,
+    startTime,
     endTime,
     setTestMeta,
     setQuestions,
     updateAnswer,
     setCurrentPage,
+    setStartTime,
     setEndTime,
     resetTest,
     hasHydrated,
@@ -41,10 +43,16 @@ export default function UserTest() {
 
     submitted.current = true;
 
+    const now = Date.now();
+    const timeTakenInSeconds = startTime
+      ? Math.floor((now - startTime) / 1000)
+      : null;
+
     await setDoc(doc(db, "results", `${testId}_${userId}`), {
       testId,
       userId,
       timestamp: new Date().toISOString(),
+      timeTaken: timeTakenInSeconds,
       answers,
     });
 
@@ -54,8 +62,9 @@ export default function UserTest() {
 
     resetTest();
     setEndTime(null);
-    navigate(`/test/${testId}/result`, {
+    navigate(`/me/test/${testId}/result`, {
       state: { testMeta, questions, answers },
+      replace: true,
     });
   }, [
     userId,
@@ -66,6 +75,7 @@ export default function UserTest() {
     testMeta,
     questions,
     setEndTime,
+    startTime,
   ]);
 
   useEffect(() => {
@@ -113,6 +123,7 @@ export default function UserTest() {
         if (endTime === null || isNaN(endTime) || endTime < now) {
           const computedEndTime = now + durationMs;
           setEndTime(computedEndTime);
+          setStartTime(now);
         }
 
         initialized.current = true;
@@ -131,6 +142,7 @@ export default function UserTest() {
     navigate,
     hasHydrated,
     setQuestions,
+    setStartTime,
   ]);
 
   useEffect(() => {

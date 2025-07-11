@@ -143,13 +143,10 @@ const ViewEditTest = () => {
     }
   };
 
-  const inputStyle =
-    "w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition";
-
   if (loading) return <p className="text-center py-10">Loading...</p>;
 
   return (
-    <div className="max-w-4xl mx-auto p-3">
+    <div className="max-w-4xl mx-auto p-1 md:p-2">
       <div className="mb-4 -ml-2">
         <button
           onClick={() => navigate(-1)}
@@ -204,7 +201,7 @@ const ViewEditTest = () => {
                           : e.target.value,
                     })
                   }
-                  className={inputStyle}
+                  className="inputStyle"
                   type={type}
                   placeholder={label}
                 />
@@ -286,12 +283,12 @@ const ViewEditTest = () => {
                       question: e.target.value,
                     })
                   }
-                  className={inputStyle}
+                  className="inputStyle"
                 />
                 {q.type === "mcq" &&
                   editedQuestion.options?.map((opt, idx) => (
                     <div key={idx}>
-                      <label className="block text-sm text-gray-600">
+                      <label className="block text-sm text-gray-600 mb-1">
                         Option {idx + 1}
                       </label>
                       <input
@@ -304,7 +301,7 @@ const ViewEditTest = () => {
                             options: updated,
                           });
                         }}
-                        className={inputStyle}
+                        className="inputStyle"
                       />
                       <label className="inline-flex items-center gap-2 mt-1 text-sm text-gray-700">
                         <input
@@ -344,7 +341,7 @@ const ViewEditTest = () => {
                           blankAnswer: e.target.value,
                         })
                       }
-                      className={inputStyle}
+                      className="inputStyle"
                     />
                   </>
                 )}
@@ -416,7 +413,7 @@ const ViewEditTest = () => {
               onChange={(e) =>
                 setNewQuestion({ ...newQuestion, type: e.target.value })
               }
-              className={inputStyle}
+              className="inputStyle"
             >
               <option value="mcq">MCQ</option>
               <option value="fitb">Fill in the Blank</option>
@@ -430,7 +427,7 @@ const ViewEditTest = () => {
               onChange={(e) =>
                 setNewQuestion({ ...newQuestion, question: e.target.value })
               }
-              className={inputStyle}
+              className="inputStyle"
             />
 
             {newQuestion.type === "mcq" &&
@@ -446,7 +443,7 @@ const ViewEditTest = () => {
                       updated[idx] = e.target.value;
                       setNewQuestion({ ...newQuestion, options: updated });
                     }}
-                    className={inputStyle}
+                    className="inputStyle"
                   />
                 </div>
               ))}
@@ -498,7 +495,7 @@ const ViewEditTest = () => {
                       blankAnswer: e.target.value,
                     })
                   }
-                  className={inputStyle}
+                  className="inputStyle"
                 />
               </>
             )}

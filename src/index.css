@@ -17,14 +17,6 @@
   animation: fadeIn 0.2s ease-out;
 }
 
-/* body {
-  user-select: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
+.inputStyle {
+  @apply w-full px-3 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition;
 }
-
-.no-copy {
-  user-select: none;
-  -webkit-user-select: none;
-} */

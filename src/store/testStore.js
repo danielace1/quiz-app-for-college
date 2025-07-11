@@ -10,6 +10,7 @@ const useTestStore = create(
       questions: [],
       answers: {},
       currentPage: 0,
+      startTime: null,
       endTime: null,
       hasHydrated: false,
 
@@ -26,6 +27,7 @@ const useTestStore = create(
           },
         })),
       setCurrentPage: (page) => set({ currentPage: page }),
+      setStartTime: (time) => set({ startTime: time }),
       setEndTime: (endTime) => set({ endTime }),
 
       setHasHydrated: (value) => set({ hasHydrated: value }),
@@ -48,6 +50,7 @@ const useTestStore = create(
         questionFormData: state.questionFormData,
         answers: state.answers,
         currentPage: state.currentPage,
+        startTime: state.startTime,
         endTime: state.endTime,
         questions: state.questions,
       }),

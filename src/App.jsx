@@ -11,6 +11,8 @@ import ErrorPage from "./ErrorPage/Error";
 // User
 import DashboardLayout from "./Pages/DashboardLayout";
 import Test from "./Pages/Test";
+import UserTest from "./Pages/UserTest";
+import Result from "./Pages/Result";
 import Leaderboard from "./Pages/Leaderboard";
 import History from "./Pages/History";
 import Profile from "./Pages/Profile";
@@ -22,7 +24,6 @@ import AdminDashboard from "./Pages/Admin/AdminDashboard";
 import CreateTest from "./Pages/Admin/CreateTest";
 import ViewEditTest from "./Pages/Admin/ViewEditTest";
 import TestList from "./Pages/Admin/TestList";
-import UserTest from "./Pages/UserTest";
 
 const App = () => {
   const initAuth = useAuthStore((state) => state.initAuth);
@@ -68,6 +69,7 @@ const App = () => {
         >
           <Route path="test" element={<Test />} />
           <Route path="test/:testId" element={<UserTest />} />
+          <Route path="test/:testId/result" element={<Result />} />
           <Route path="leaderboard" element={<Leaderboard />} />
           <Route path="history" element={<History />} />
           <Route path="" element={<Profile />} />
@@ -86,6 +88,7 @@ const App = () => {
           <Route path="createtest" element={<CreateTest />} />
           <Route path="tests" element={<TestList />} />
           <Route path="tests/:testId" element={<ViewEditTest />} />
+          <Route path="leaderboard" element={<Leaderboard />} />
         </Route>
         <Route path="*" element={<ErrorPage />} />
       </Routes>
