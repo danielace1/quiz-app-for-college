@@ -14,9 +14,9 @@ const SignupSchema = z
       .string()
       .min(3, { message: "Name should be at least 3 characters" }),
     regNo: z
-      .number({ invalid_type_error: "Register Number is required" })
+      .string()
       .min(1, { message: "Register Number is required" })
-      .max(12, { message: "Register Number should not exceed 12 characters" }),
+      .length(12, { message: "Register Number must be exactly 12 digits" }),
     email: z.string().email({ message: "Email is required" }),
     password: z
       .string()
@@ -55,7 +55,7 @@ const SignupPage = () => {
       const user = userCredential.user;
       await setDoc(doc(db, "users", user.uid), {
         username: data.username,
-        regNo: data.regNo,
+        regNo: Number(data.regNo),
         email: data.email,
         role: "user",
         createdAt: new Date().toISOString(),
@@ -134,7 +134,7 @@ const SignupPage = () => {
                 <input
                   type="text"
                   id="username"
-                  placeholder="John Doe"
+                  placeholder="Enter your name"
                   {...register("username")}
                   className={`w-full outline-none px-4 py-2.5 rounded-lg border bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ${
                     errors.username ? "border-red-500" : "border-gray-300"
@@ -157,8 +157,11 @@ const SignupPage = () => {
                 <input
                   type="number"
                   id="regNo"
+                  inputMode="numeric"
+                  pattern="\d{12}"
+                  maxLength={12}
                   placeholder="Enter your register number"
-                  {...register("regNo", { valueAsNumber: true })}
+                  {...register("regNo")}
                   className={`w-full outline-none px-4 py-2.5 rounded-lg border bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ${
                     errors.regNo ? "border-red-500" : "border-gray-300"
                   }`}

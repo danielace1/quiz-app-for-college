@@ -11,6 +11,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../../firebase";
 import { ArrowLeft, Pencil, Trash2 } from "lucide-react";
+import Loader from "../../components/Loader";
 
 const ViewEditTest = () => {
   const { testId } = useParams();
@@ -143,7 +144,12 @@ const ViewEditTest = () => {
     }
   };
 
-  if (loading) return <p className="text-center py-10">Loading...</p>;
+  if (loading)
+    return (
+      <div className="min-h-screen flex justify-center items-center">
+        <Loader />
+      </div>
+    );
 
   return (
     <div className="max-w-4xl mx-auto p-1 md:p-2">

@@ -37,7 +37,7 @@ const LoginPage = () => {
 
       const userDoc = await getDoc(doc(db, "users", user.uid));
       if (!userDoc.exists()) {
-        alert("User record not found. Contact support team.");
+        alert("User not found, Please Sign Up!");
         return;
       }
 

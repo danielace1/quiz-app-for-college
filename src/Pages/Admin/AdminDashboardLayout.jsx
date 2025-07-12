@@ -16,7 +16,7 @@ const AdminDashboardLayout = () => {
         toggleSidebar={toggleSidebar}
       />
 
-      <main className="pt-16 lg:pl-64 p-4">
+      <main className="pt-20 lg:pl-64 p-4">
         <Outlet />
       </main>
 

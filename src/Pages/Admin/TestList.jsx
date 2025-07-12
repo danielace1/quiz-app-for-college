@@ -74,7 +74,11 @@ const TestList = () => {
   const paged = filtered.slice(start, start + PAGE_SIZE);
 
   if (loading) {
-    return <Loader />;
+    return (
+      <div className="min-h-screen flex justify-center items-center">
+        <Loader />
+      </div>
+    );
   }
 
   return (
@@ -92,7 +96,7 @@ const TestList = () => {
       <SearchInput placeholder="Search tests…" onSearch={handleSearch} />
 
       {paged.length === 0 ? (
-        <p className="text-center text-gray-500">No tests found.</p>
+        <p className="text-center text-gray-500 mt-5">No tests found.</p>
       ) : (
         paged.map((test, idx) => (
           <div

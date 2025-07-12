@@ -15,7 +15,7 @@ const menuItems = [
   { label: "Create Test", icon: FilePlus, path: "/admin/createtest" },
   { label: "All Tests", icon: FilePlus, path: "/admin/tests" },
   { label: "Leaderboard", icon: LayoutDashboard, path: "/admin/leaderboard" },
-  { label: "Manage Students", icon: Users, path: "/admin/students" },
+  { label: "Manage Students", icon: Users, path: "/admin/manage-students" },
   { label: "Settings", icon: Settings, path: "/admin/settings" },
 ];
 

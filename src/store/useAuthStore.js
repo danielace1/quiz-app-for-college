@@ -20,13 +20,8 @@ const useAuthStore = create((set) => ({
             authLoading: false,
           });
         } else {
-          set({
-            user: {
-              uid: firebaseUser.uid,
-              email: firebaseUser.email,
-            },
-            authLoading: false,
-          });
+          await signOut(auth);
+          set({ user: null, authLoading: false });
         }
       } else {
         set({ user: null, authLoading: false });

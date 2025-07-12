@@ -105,7 +105,7 @@ const TestMetaForm = ({ onNext }) => {
   };
 
   return (
-    <div className="px-4 pt-6 pb-3 lg:pt-10 lg:px-8 max-w-2xl mx-auto">
+    <div className="pb-3 lg:pt-5 lg:px-8 max-w-2xl mx-auto">
       <h2 className="text-2xl font-bold text-gray-800 mb-6">Create New Test</h2>
       <form onSubmit={handleSubmit(submitMeta)} className="space-y-6">
         <div>
