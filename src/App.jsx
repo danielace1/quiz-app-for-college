@@ -25,6 +25,7 @@ import CreateTest from "./Pages/Admin/CreateTest";
 import ViewEditTest from "./Pages/Admin/ViewEditTest";
 import TestList from "./Pages/Admin/TestList";
 import ManageStudentsData from "./Pages/Admin/ManageStudentsData";
+import Settings from "./Pages/Admin/Settings";
 
 const App = () => {
   const initAuth = useAuthStore((state) => state.initAuth);
@@ -91,6 +92,7 @@ const App = () => {
           <Route path="tests/:testId" element={<ViewEditTest />} />
           <Route path="leaderboard" element={<Leaderboard />} />
           <Route path="manage-students" element={<ManageStudentsData />} />
+          <Route path="settings" element={<Settings />} />
         </Route>
         <Route path="*" element={<ErrorPage />} />
       </Routes>
