@@ -163,38 +163,54 @@ const ManageStudentsData = () => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-100">
-            {paged.map((student, index) => {
-              const userResults = getUserResults(student.id);
-              return (
-                <tr key={student.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-2">{start + index + 1}</td>
-                  <td className="px-4 py-2">{student.username || "Unnamed"}</td>
-                  <td className="px-4 py-2">{student.regNo}</td>
-                  <td className="px-4 py-2">{student.email}</td>
-                  <td className="px-4 py-2">{userResults.length}</td>
-                  <td className="px-4 py-2 space-y-2">
-                    <button
-                      onClick={() =>
-                        setDeleteTarget({ userId: student.id, type: "all" })
-                      }
-                      className="text-red-600 hover:text-red-800 text-xs flex items-center gap-1"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                      Clear Results
-                    </button>
-                    <button
-                      onClick={() =>
-                        setDeleteTarget({ userId: student.id, type: "student" })
-                      }
-                      className="text-red-700 hover:text-red-900 text-xs flex items-center gap-1"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                      Delete Student
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
+            {filtered.length === 0 ? (
+              <tr>
+                <td
+                  colSpan="6"
+                  className="text-center text-gray-500 py-6 text-sm"
+                >
+                  No users found.
+                </td>
+              </tr>
+            ) : (
+              paged.map((student, index) => {
+                const userResults = getUserResults(student.id);
+                return (
+                  <tr key={student.id} className="hover:bg-gray-50">
+                    <td className="px-4 py-2">{start + index + 1}</td>
+                    <td className="px-4 py-2">
+                      {student.username || "Unnamed"}
+                    </td>
+                    <td className="px-4 py-2">{student.regNo}</td>
+                    <td className="px-4 py-2">{student.email}</td>
+                    <td className="px-4 py-2">{userResults.length}</td>
+                    <td className="px-4 py-2 space-y-2">
+                      <button
+                        onClick={() =>
+                          setDeleteTarget({ userId: student.id, type: "all" })
+                        }
+                        className="text-red-600 hover:text-red-800 text-xs flex items-center gap-1"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Clear Results
+                      </button>
+                      <button
+                        onClick={() =>
+                          setDeleteTarget({
+                            userId: student.id,
+                            type: "student",
+                          })
+                        }
+                        className="text-red-700 hover:text-red-900 text-xs flex items-center gap-1"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Delete Student
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })
+            )}
           </tbody>
         </table>
       </div>
