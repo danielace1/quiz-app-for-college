@@ -1,3 +1,4 @@
+import { Rocket } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const GuestLayout = () => {
@@ -8,13 +9,14 @@ const GuestLayout = () => {
           Welcome to <span className="text-yellow-500">Quiz Craze</span> 🎉
         </h1>
         <p className="text-gray-700 text-base mb-6">
-          Challenge yourself with fun quizzes across a variety of topics. Play,
-          learn, and climb the leaderboard! Ready to begin?
+          An interactive platform where educators create tests and students take
+          them seamlessly. Join now to experience smart, engaging assessments!
         </p>
 
-        <Link to="/login">
-          <button className="mt-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold text-lg py-2.5 px-8 rounded-lg transition duration-300 shadow-md">
-            Get Started 🚀
+        <Link to="/login" className="flex justify-center">
+          <button className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold text-lg py-2.5 px-8 rounded-lg transition duration-300 shadow-md">
+            <span> Get Started</span>
+            <Rocket className="w-5 h-5" />
           </button>
         </Link>
       </div>
