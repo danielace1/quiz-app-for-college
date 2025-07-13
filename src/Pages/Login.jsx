@@ -93,9 +93,9 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-yellow-100 flex items-center justify-center px-4 py-10">
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-yellow-100 flex items-center justify-center px-4 py-4 md:py-10">
       <div className="max-w-5xl w-full bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col md:flex-row items-center md:items-stretch">
-        <div className="md:w-1/2 bg-gradient-to-br from-blue-50 to-yellow-50 p-8 md:p-12 flex flex-col items-center justify-center relative overflow-hidden">
+        <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-blue-50 to-yellow-50 p-8 md:p-12 flex-col items-center justify-center relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-full opacity-10">
             <div className="absolute top-10 left-10 w-20 h-20 bg-blue-400 rounded-full"></div>
             <div className="absolute bottom-10 right-10 w-32 h-32 bg-yellow-400 rounded-full"></div>
@@ -117,9 +117,9 @@ const LoginPage = () => {
                 <Rocket className="inline-block w-8 h-8 text-yellow-500 animate-bounce" />
               </span>
             </h1>
-            <p className="text-gray-600 text-lg mb-4">
-              Challenge yourself with exciting quizzes and expand your
-              knowledge!
+            <p className="text-gray-600 mb-4">
+              A smarter way for educators to create and for students to learn -
+              through fun, interactive quizzes.
             </p>
             <div className="mt-8 relative">
               <div className="absolute -top-6 -left-6">
@@ -137,8 +137,27 @@ const LoginPage = () => {
           </div>
         </div>
 
-        <div className="md:w-1/2 w-full p-5 md:p-12 bg-white">
-          <div className="max-w-md mx-auto">
+        <div className="md:w-1/2 w-full px-5 py-10 md:p-12 bg-white flex items-center justify-center">
+          <div className="w-full max-w-md mx-auto">
+            <div className="block md:hidden text-center mb-6">
+              <div className="flex justify-center mb-4 relative">
+                <div className="relative inline-block p-4 bg-blue-100 rounded-full shadow">
+                  <Brain size={48} className="text-blue-600" />
+                  <Sparkles
+                    size={20}
+                    className="absolute -top-2 -right-2 text-yellow-500"
+                  />
+                </div>
+              </div>
+              <h1 className="text-2xl font-bold text-blue-600 flex items-center justify-center gap-2">
+                Quiz Craze
+                <Rocket className="inline-block w-6 h-6 text-yellow-500 animate-bounce" />
+              </h1>
+              <p className="text-gray-600 mt-2 text-sm px-4">
+                Login to continue your quiz journey and test your knowledge!
+              </p>
+            </div>
+
             <h2 className="text-2xl font-bold text-gray-800 mb-2">
               👋 Welcome Back!
             </h2>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../firebase";
-import { Users, FileText, BarChart2 } from "lucide-react";
+import { Users, FileText, BarChart2, CalendarDays } from "lucide-react";
 import moment from "moment";
 import AdminDashboardCard from "../../components/Admin/AdminDashboardCard";
 
@@ -70,7 +70,8 @@ const AdminDashboard = () => {
 
       <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-5">
         <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-          📅 Recent Test Activity
+          <CalendarDays size={18} className="text-blue-600" />
+          Recent Test Activity
         </h2>
         <div className="overflow-x-auto rounded-md">
           <table className="min-w-full text-sm text-left border border-gray-200">
