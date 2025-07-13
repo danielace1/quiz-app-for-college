@@ -6,7 +6,14 @@ import {
   reauthenticateWithCredential,
   EmailAuthProvider,
 } from "firebase/auth";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  updateDoc,
+  deleteDoc,
+} from "firebase/firestore";
 import { db } from "../../firebase";
 import { Pencil, Save, User, Lock, Eye, EyeOff } from "lucide-react";
 
@@ -59,7 +66,6 @@ const Settings = () => {
         email,
       });
 
-      // Sync UI and reset original data
       setOriginalName(name);
       setOriginalEmail(email);
       alert("Profile updated.");
@@ -92,6 +98,40 @@ const Settings = () => {
     } catch (err) {
       console.error(err);
       alert("Failed to change password.");
+    }
+  };
+
+  const handleClearAllData = async () => {
+    const confirm = window.confirm(
+      "Are you sure you want to delete ALL tests and results? This action cannot be undone!"
+    );
+    if (!confirm) return;
+
+    try {
+      const testSnap = await getDocs(collection(db, "tests"));
+      const testDeletes = testSnap.docs.map(async (testDoc) => {
+        const testId = testDoc.id;
+
+        const questionsSnap = await getDocs(
+          collection(db, "tests", testId, "questions")
+        );
+        const questionDeletes = questionsSnap.docs.map((qDoc) =>
+          deleteDoc(qDoc.ref)
+        );
+        await Promise.all(questionDeletes);
+
+        await deleteDoc(doc(db, "tests", testId));
+      });
+
+      const resultSnap = await getDocs(collection(db, "results"));
+      const resultDeletes = resultSnap.docs.map((doc) => deleteDoc(doc.ref));
+
+      await Promise.all([...testDeletes, ...resultDeletes]);
+
+      alert("All test and result data has been cleared.");
+    } catch (err) {
+      console.error("Failed to clear data:", err);
+      alert("Something went wrong while clearing data.");
     }
   };
 
@@ -236,6 +276,21 @@ const Settings = () => {
             </div>
           </div>
         )}
+      </div>
+
+      <hr className="my-6" />
+
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold flex items-center gap-2 text-red-600">
+          ⚠️ Danger Zone
+        </h3>
+
+        <button
+          onClick={handleClearAllData}
+          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md"
+        >
+          Clear All Test Data
+        </button>
       </div>
     </div>
   );
