@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import {
   getAuth,
-  updateEmail,
   updatePassword,
   reauthenticateWithCredential,
   EmailAuthProvider,
@@ -51,17 +50,11 @@ const Profile = () => {
   const handleUpdateProfile = async () => {
     setLoading(true);
     try {
-      if (user.email !== email) {
-        await updateEmail(user, email);
-      }
-
       await updateDoc(doc(db, "users", uid), {
         username: name,
-        email,
       });
 
       setOriginalName(name);
-      setOriginalEmail(email);
       toast.success("Profile updated successfully.");
       setEditMode(false);
     } catch (err) {
@@ -74,7 +67,6 @@ const Profile = () => {
 
   const handleCancelEdit = () => {
     setName(originalName);
-    setEmail(originalEmail);
     setEditMode(false);
   };
 
@@ -131,9 +123,8 @@ const Profile = () => {
           <input
             type="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            disabled={!editMode}
-            className="w-full outline-none border px-3 py-2 rounded-lg mt-2 border-gray-200 bg-gray-50 focus:border-blue-500 transition"
+            disabled
+            className="w-full outline-none border px-3 py-2 rounded-lg mt-2 border-gray-200 bg-gray-100 cursor-not-allowed"
           />
         </div>
 

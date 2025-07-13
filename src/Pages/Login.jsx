@@ -3,10 +3,16 @@ import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { Eye, EyeOff, Brain, Rocket, Sparkles } from "lucide-react";
-import { auth, db } from "../firebase";
+import {
+  signInWithEmailAndPassword,
+  browserLocalPersistence,
+  browserSessionPersistence,
+  setPersistence,
+  sendPasswordResetEmail,
+} from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
+import { auth, db } from "../firebase";
+import { Eye, EyeOff, Brain, Rocket, Sparkles } from "lucide-react";
 
 const LoginSchema = z.object({
   email: z.string().email({ message: "Email is required" }),
@@ -28,6 +34,13 @@ const LoginPage = () => {
 
   const login = async (e) => {
     try {
+      const rememberMe = document.getElementById("remember").checked;
+
+      await setPersistence(
+        auth,
+        rememberMe ? browserLocalPersistence : browserSessionPersistence
+      );
+
       const userCredential = await signInWithEmailAndPassword(
         auth,
         e.email,
@@ -63,6 +76,19 @@ const LoginPage = () => {
       } else {
         alert("An unexpected error occurred. Please try again.");
       }
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    const email = prompt("Enter your email to reset password:");
+    if (!email) return;
+
+    try {
+      await sendPasswordResetEmail(auth, email);
+      alert("Password reset email sent! Please check your inbox.");
+    } catch (error) {
+      alert("Failed to send reset email. Make sure the email is valid.");
+      console.error(error);
     }
   };
 
@@ -190,7 +216,8 @@ const LoginPage = () => {
                 </div>
                 <button
                   type="button"
-                  className="text-sm font-medium text-blue-600 hover:text-blue-500"
+                  onClick={handleForgotPassword}
+                  className="text-sm font-medium text-blue-600 hover:text-blue-500 hover:underline"
                 >
                   Forgot password?
                 </button>
