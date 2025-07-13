@@ -46,7 +46,7 @@ const App = () => {
         location.pathname === "/signup"
       ) {
         const isAdmin = user?.role === "admin";
-        navigate(isAdmin ? "/admin" : "/me");
+        navigate(isAdmin ? "/admin" : "/me/test");
       }
     }
   }, [authLoading, user, navigate, location]);
@@ -74,7 +74,7 @@ const App = () => {
           <Route path="test/:testId/result" element={<Result />} />
           <Route path="leaderboard" element={<Leaderboard />} />
           <Route path="history" element={<History />} />
-          <Route path="" element={<Profile />} />
+          <Route path="profile" element={<Profile />} />
         </Route>
 
         {/* Admin */}

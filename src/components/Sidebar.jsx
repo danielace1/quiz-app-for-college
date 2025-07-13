@@ -14,7 +14,7 @@ const menuItems = [
   { icon: ClipboardList, label: "Attempt Test", path: "/me/test" },
   { icon: Trophy, label: "Leaderboard", path: "/me/leaderboard" },
   { icon: History, label: "History", path: "/me/history" },
-  { icon: UserCircle, label: "Profile", path: "" },
+  { icon: UserCircle, label: "Profile", path: "/me/profile" },
 ];
 
 const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
@@ -28,7 +28,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
     >
       <div className="h-full mt-2 px-3 md:px-5 py-4 overflow-y-auto">
         <div className="flex items-center justify-between mb-5">
-          <Link to={"/me"}>
+          <Link to={"/me/test"}>
             <div className="flex items-center">
               <Brain className="h-8 w-8 text-blue-600" />
               <span className="ml-2 text-xl md:text-2xl font-bold text-gray-800">

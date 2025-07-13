@@ -44,7 +44,7 @@ const LoginPage = () => {
       const userData = userDoc.data();
 
       if (userData.role === "user") {
-        navigate(`/me`);
+        navigate(`/me/test`);
       } else if (userData.role === "admin") {
         navigate(`/admin`);
       }
