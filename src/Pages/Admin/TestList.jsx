@@ -7,6 +7,7 @@ import ConfirmationModal from "../../components/Admin/ConfirmationModal";
 import SearchInput from "../../components/Admin/SearchInput";
 import Pagination from "../../components/Admin/Pagination";
 import Loader from "../../components/Loader";
+import toast from "react-hot-toast";
 
 const PAGE_SIZE = 10;
 
@@ -52,9 +53,10 @@ const TestList = () => {
       const newList = tests.filter((t) => t.id !== id);
       setTests(newList);
       setFiltered(newList);
+      toast.success("Test deleted successfully.");
     } catch (err) {
       console.error("Error deleting test and its questions:", err);
-      alert("Failed to delete test.");
+      toast.error("Failed to delete test.");
     }
   };
   const handleSearch = (query) => {

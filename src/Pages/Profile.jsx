@@ -7,8 +7,9 @@ import {
   EmailAuthProvider,
 } from "firebase/auth";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { db } from "../firebase/index";
+import { db } from "../firebase";
 import { Pencil, Lock, Eye, EyeOff, User } from "lucide-react";
+import toast from "react-hot-toast";
 
 const Profile = () => {
   const auth = getAuth();
@@ -61,11 +62,11 @@ const Profile = () => {
 
       setOriginalName(name);
       setOriginalEmail(email);
-      alert("Profile updated successfully.");
+      toast.success("Profile updated successfully.");
       setEditMode(false);
     } catch (err) {
       console.error(err);
-      alert("Failed to update profile.");
+      toast.error("Failed to update profile.");
     } finally {
       setLoading(false);
     }
@@ -84,13 +85,13 @@ const Profile = () => {
       const credential = EmailAuthProvider.credential(user.email, oldPwd);
       await reauthenticateWithCredential(user, credential);
       await updatePassword(user, newPwd);
-      alert("Password updated.");
+      toast.success("Password updated successfully.");
       setChangePwd(false);
       setOldPwd("");
       setNewPwd("");
     } catch (err) {
       console.error(err);
-      alert("Failed to change password.");
+      toast.error("Failed to change password.");
     }
   };
 

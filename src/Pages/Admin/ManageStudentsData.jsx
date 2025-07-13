@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { Users, Trash2 } from "lucide-react";
+import toast from "react-hot-toast";
 import Loader from "../../components/Loader";
 import ConfirmationModal from "../../components/Admin/ConfirmationModal";
 import Pagination from "../../components/Admin/Pagination";
@@ -85,12 +86,15 @@ const ManageStudentsData = () => {
       if (type === "student") {
         setStudents((prev) => prev.filter((u) => u.id !== userId));
         setFiltered((prev) => prev.filter((u) => u.id !== userId));
+        toast.success("Student and all results deleted successfully.");
       }
 
       if (type === "all-users") {
         setResults([]);
+        toast.success("All results cleared for all users.");
       } else {
         setResults((prev) => prev.filter((r) => r.userId !== userId));
+        toast.success("Results cleared successfully.");
       }
     } catch (err) {
       console.error("Error deleting student or results:", err);

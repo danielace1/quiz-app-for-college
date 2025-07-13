@@ -16,7 +16,6 @@ const History = () => {
       const auth = getAuth();
       onAuthStateChanged(auth, async (user) => {
         if (!user) {
-          alert("Please login to view history.");
           return navigate("/login");
         }
 

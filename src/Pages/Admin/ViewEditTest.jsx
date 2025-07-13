@@ -11,6 +11,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../../firebase";
 import { ArrowLeft, Pencil, Trash2 } from "lucide-react";
+import toast from "react-hot-toast";
 import Loader from "../../components/Loader";
 
 const ViewEditTest = () => {
@@ -73,19 +74,26 @@ const ViewEditTest = () => {
       await updateDoc(testDocRef, testMetaEdit);
       setTestMeta(testMetaEdit);
       setEditingMeta(false);
+      toast.success("Test metadata updated successfully");
     } catch (err) {
       console.error("Failed to update test metadata", err);
+      toast.error("Failed to update test metadata.");
     }
   };
 
   const handleSaveQuestion = async (questionId) => {
     try {
       const questionRef = doc(db, "tests", testId, "questions", questionId);
+      if (!editedQuestion.question.trim()) {
+        alert("Please enter the question.");
+        return;
+      }
+
       if (
-        !editedQuestion.question.trim() ||
+        editedQuestion.type === "mcq" &&
         editedQuestion.options.some((opt) => !opt.trim())
       ) {
-        alert("Please fill in the question and all options.");
+        alert("Please fill in all the options.");
         return;
       }
 
@@ -98,6 +106,14 @@ const ViewEditTest = () => {
         return;
       }
 
+      if (
+        editedQuestion.type === "fitb" &&
+        !editedQuestion.blankAnswer.trim()
+      ) {
+        alert("Please enter the correct answer for fill-in-the-blank.");
+        return;
+      }
+
       await updateDoc(questionRef, editedQuestion);
 
       const updatedQuestions = [...questions];
@@ -106,9 +122,10 @@ const ViewEditTest = () => {
 
       setEditingIndex(null);
       setEditedQuestion({});
+      toast.success("Question updated successfully");
     } catch (err) {
       console.error("Failed to update question", err);
-      alert("Failed to update question.");
+      toast.error("Failed to update question.");
     }
   };
 
@@ -119,9 +136,10 @@ const ViewEditTest = () => {
     try {
       await deleteDoc(doc(db, "tests", testId, "questions", questionId));
       setQuestions(questions.filter((q) => q.id !== questionId));
+      toast.success("Question deleted successfully");
     } catch (err) {
       console.error("Delete failed", err);
-      alert("Failed to delete question.");
+      toast.error("Failed to delete question.");
     }
   };
 
@@ -138,9 +156,10 @@ const ViewEditTest = () => {
         correctAnswers: [],
         blankAnswer: "",
       });
+      toast.success("New question added successfully");
     } catch (err) {
       console.error("Error adding question:", err);
-      alert("Failed to add question.");
+      toast.error("Failed to add question.");
     }
   };
 

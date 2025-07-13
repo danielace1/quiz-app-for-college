@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 import GuestLayout from "./Layout/GuestLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Loader from "./components/Loader";
@@ -96,6 +97,8 @@ const App = () => {
         </Route>
         <Route path="*" element={<ErrorPage />} />
       </Routes>
+
+      <Toaster position="top-right" reverseOrder={false} />
     </>
   );
 };

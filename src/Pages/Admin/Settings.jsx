@@ -16,6 +16,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../../firebase";
 import { Pencil, Save, User, Lock, Eye, EyeOff } from "lucide-react";
+import toast from "react-hot-toast";
 
 const Settings = () => {
   const auth = getAuth();
@@ -68,11 +69,11 @@ const Settings = () => {
 
       setOriginalName(name);
       setOriginalEmail(email);
-      alert("Profile updated.");
+      toast.success("Profile updated successfully!");
       setEditMode(false);
     } catch (err) {
       console.error(err);
-      alert("Update failed.");
+      toast.error("Update failed.");
     } finally {
       setLoading(false);
     }
@@ -91,13 +92,13 @@ const Settings = () => {
       const credential = EmailAuthProvider.credential(user.email, oldPwd);
       await reauthenticateWithCredential(user, credential);
       await updatePassword(user, newPwd);
-      alert("Password updated.");
+      toast.success("Password updated successfully.");
       setChangePwd(false);
       setOldPwd("");
       setNewPwd("");
     } catch (err) {
       console.error(err);
-      alert("Failed to change password.");
+      toast.error("Failed to change password.");
     }
   };
 
@@ -128,10 +129,10 @@ const Settings = () => {
 
       await Promise.all([...testDeletes, ...resultDeletes]);
 
-      alert("All test and result data has been cleared.");
+      toast.success("All test data cleared successfully!");
     } catch (err) {
       console.error("Failed to clear data:", err);
-      alert("Something went wrong while clearing data.");
+      toast.error("Something went wrong while clearing data.");
     }
   };
 

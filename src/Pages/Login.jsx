@@ -111,7 +111,7 @@ const LoginPage = () => {
           </div>
         </div>
 
-        <div className="md:w-1/2 w-full p-8 md:p-12 bg-white">
+        <div className="md:w-1/2 w-full p-5 md:p-12 bg-white">
           <div className="max-w-md mx-auto">
             <h2 className="text-2xl font-bold text-gray-800 mb-2">
               👋 Welcome Back!
