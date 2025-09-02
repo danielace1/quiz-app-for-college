@@ -9,6 +9,8 @@ const Result = () => {
   const { testMeta, questions, answers } = state || {};
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
     if (!state) {
       navigate("/me/test");
     }

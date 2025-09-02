@@ -1,12 +1,35 @@
 import { useEffect, useState } from "react";
+import * as XLSX from "xlsx";
+import { Trophy, User, AlertTriangle } from "lucide-react";
+import { getAuth } from "firebase/auth";
 import { collection, getDocs, doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import Loader from "../components/Loader";
-import { Trophy, User, AlertTriangle } from "lucide-react";
 
 const Leaderboard = () => {
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const [currentUser, setCurrentUser] = useState(null);
+  const [userRole, setUserRole] = useState(null);
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        setCurrentUser(user);
+        const userSnap = await getDoc(doc(db, "users", user.uid));
+        if (userSnap.exists()) {
+          setUserRole(userSnap.data().role);
+        }
+      } else {
+        setCurrentUser(null);
+        setUserRole(null);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const normalize = (val) =>
     Array.isArray(val)
@@ -84,7 +107,8 @@ const Leaderboard = () => {
           ).length;
 
           subjectWise[key].push({
-            name: user.username || "Anonymous",
+            name: user.username,
+            regno: user.regNo,
             marks: correctCount,
             timeTaken: result.timeTaken || 0,
           });
@@ -107,6 +131,41 @@ const Leaderboard = () => {
 
     fetchLeaderboard();
   }, []);
+
+  const handleExport = () => {
+    const exportData = [];
+
+    Object.keys(leaderboardData).forEach((subject) => {
+      leaderboardData[subject].forEach((entry, i) => {
+        exportData.push({
+          Subject: subject,
+          Rank: i + 1,
+          RegNo: String(entry.regno),
+          Name: entry.name,
+          Marks: entry.marks,
+          "Time Taken": `${Math.floor(entry.timeTaken / 60)}m ${
+            entry.timeTaken % 60
+          }s`,
+        });
+      });
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+
+    const colWidths = Object.keys(exportData[0]).map((key) => {
+      const maxLength = exportData.reduce(
+        (w, row) => Math.max(w, String(row[key]).length),
+        key.length
+      );
+      return { wch: maxLength + 2 };
+    });
+    worksheet["!cols"] = colWidths;
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Leaderboard");
+
+    XLSX.writeFile(workbook, "leaderboard.xlsx");
+  };
 
   if (loading)
     return (
@@ -134,15 +193,32 @@ const Leaderboard = () => {
       ) : (
         Object.keys(leaderboardData).map((subject, idx) => (
           <div key={idx} className="mb-10">
-            <h2 className="text-lg md:text-2xl font-semibold mb-4 text-blue-700">
-              {subject}
-            </h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg md:text-2xl font-semibold text-blue-700">
+                {subject}
+              </h2>
+
+              <div>
+                {userRole === "admin" && (
+                  <button
+                    onClick={handleExport}
+                    className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg shadow-md"
+                  >
+                    Export Results
+                  </button>
+                )}
+              </div>
+            </div>
+
             <div className="overflow-x-auto border rounded-xl">
               <table className="min-w-full divide-y divide-gray-200 shadow-lg overflow-hidden">
                 <thead className="bg-blue-50">
                   <tr>
                     <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
                       Rank
+                    </th>
+                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
+                      Reg No.
                     </th>
                     <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700">
                       Student
@@ -161,6 +237,7 @@ const Leaderboard = () => {
                       <td className="px-6 py-4 font-bold text-gray-700">
                         #{i + 1}
                       </td>
+                      <td className="px-6 py-4 text-gray-700">{entry.regno}</td>
                       <td className="px-6 py-4 flex items-center gap-2">
                         <User className="w-4 h-4 text-gray-500" /> {entry.name}
                       </td>

@@ -87,12 +87,10 @@ const ManageStudentsData = () => {
         setStudents((prev) => prev.filter((u) => u.id !== userId));
         setFiltered((prev) => prev.filter((u) => u.id !== userId));
         toast.success("Student and all results deleted successfully.");
-      }
-
-      if (type === "all-users") {
+      } else if (type === "all-users") {
         setResults([]);
         toast.success("All results cleared for all users.");
-      } else {
+      } else if (type === "all") {
         setResults((prev) => prev.filter((r) => r.userId !== userId));
         toast.success("Results cleared successfully.");
       }

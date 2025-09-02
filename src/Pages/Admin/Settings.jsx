@@ -80,6 +80,9 @@ const Settings = () => {
   const handlePasswordChange = async () => {
     if (!oldPwd || !newPwd) return alert("Please fill all fields");
 
+    if (newPwd.length < 8)
+      return alert("New password must be at least 8 characters long");
+
     try {
       const credential = EmailAuthProvider.credential(user.email, oldPwd);
       await reauthenticateWithCredential(user, credential);
