@@ -74,7 +74,7 @@ const SignupPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-yellow-100 flex items-center justify-center px-4 py-4 md:py-10">
-      <div className="max-w-6xl w-full bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col md:flex-row items-center md:items-stretch">
+      <div className="max-w-6xl w-full bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col md:flex-row items-center md:items-stretch mb-3">
         <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-blue-50 to-yellow-50 p-8 md:p-12 flex-col items-center justify-center relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-full opacity-10">
             <div className="absolute top-10 left-10 w-20 h-20 bg-blue-400 rounded-full"></div>

@@ -27,6 +27,7 @@ import ViewEditTest from "./Pages/Admin/ViewEditTest";
 import TestList from "./Pages/Admin/TestList";
 import ManageStudentsData from "./Pages/Admin/ManageStudentsData";
 import Settings from "./Pages/Admin/Settings";
+import Footer from "./components/Footer";
 
 const App = () => {
   const initAuth = useAuthStore((state) => state.initAuth);
@@ -53,6 +54,8 @@ const App = () => {
   }, [authLoading, user, navigate, location]);
 
   if (authLoading) return <Loader />;
+
+  const showFooter = ["/", "/login", "/signup"].includes(location.pathname);
 
   return (
     <>
@@ -98,6 +101,7 @@ const App = () => {
         <Route path="*" element={<ErrorPage />} />
       </Routes>
 
+      {showFooter && <Footer />}
       <Toaster position="top-right" reverseOrder={false} />
     </>
   );

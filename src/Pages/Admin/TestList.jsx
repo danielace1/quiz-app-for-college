@@ -84,8 +84,8 @@ const TestList = () => {
   }
 
   return (
-    <div className="max-w-5xl mx-auto py-6 px-2 md:px-6 space-y-4">
-      <div className="md:flex justify-between items-center">
+    <div className="max-w-5xl mx-auto py-6 px-2 md:px-6">
+      <div className="md:flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold text-gray-800">All Created Tests</h2>
         <button
           onClick={() => navigate("/admin/createtest")}
