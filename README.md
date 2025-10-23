@@ -4,7 +4,7 @@
 
 ![Quiz Craze Preview](https://quiz-craze-pi.vercel.app/preview-image.jpg)
 
-### 🌍 [Live Demo](https://quiz-craze-pi.vercel.app)
+### 🌍 [Live Link](https://quiz-craze-pi.vercel.app)
 
 ---
 
@@ -16,6 +16,8 @@
 - Monitor total users, tests, and activity
 - View and manage student results
 - Clear data with one click when needed
+- Export results to CSV for offline analysis
+- Generate and Save Quizzes – Admins can now generate quizzes using AI (`Groq`), save them for later use, and access them anytime.
 
 ### 👩‍🎓 User (Student)
 
@@ -23,6 +25,7 @@
 - Take timed quizzes with real-time answer saving
 - Get instant results with correct answers
 - Access previous test history (Recent Activity)
+- Leaderboard to see top performers
 
 ### 🌐 General
 

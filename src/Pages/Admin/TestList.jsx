@@ -104,7 +104,7 @@ const TestList = () => {
           <div
             key={test.id}
             onClick={() => navigate(`/admin/tests/${test.id}`)}
-            className="bg-white p-4 rounded shadow cursor-pointer transition group"
+            className="bg-white p-4 rounded shadow cursor-pointer transition group mb-4"
           >
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
               <div className="flex-1">

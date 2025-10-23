@@ -13,6 +13,12 @@ import {
 const menuItems = [
   { label: "Dashboard", icon: LayoutDashboard, path: "/admin" },
   { label: "Create Test", icon: FilePlus, path: "/admin/createtest" },
+  {
+    label: "Generate Questions",
+    icon: Brain,
+    path: "/admin/generate-questions",
+  },
+  { label: "Saved Questions", icon: FilePlus, path: "/admin/saved-questions" },
   { label: "All Tests", icon: FilePlus, path: "/admin/tests" },
   { label: "Leaderboard", icon: LayoutDashboard, path: "/admin/leaderboard" },
   { label: "Manage Students", icon: Users, path: "/admin/manage-students" },
@@ -24,7 +30,7 @@ const AdminSidebar = ({ isSidebarOpen, toggleSidebar }) => {
 
   return (
     <aside
-      className={`fixed top-0 left-0 z-40 w-64 h-screen transition-transform ${
+      className={`fixed top-0 left-0 z-50 w-64 h-screen transition-transform ${
         isSidebarOpen ? "translate-x-0" : "-translate-x-full"
       } lg:translate-x-0 bg-white border-r border-gray-200`}
     >

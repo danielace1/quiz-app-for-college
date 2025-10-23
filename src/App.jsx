@@ -23,6 +23,8 @@ import ProtectedAdminRoute from "./components/Admin/ProtectedAdminRoute";
 import AdminDashboardLayout from "./Pages/Admin/AdminDashboardLayout";
 import AdminDashboard from "./Pages/Admin/AdminDashboard";
 import CreateTest from "./Pages/Admin/CreateTest";
+import GenerateQuestions from "./Pages/Admin/GenerateQuestions";
+import SavedQuestions from "./Pages/Admin/SavedQuestions";
 import ViewEditTest from "./Pages/Admin/ViewEditTest";
 import TestList from "./Pages/Admin/TestList";
 import ManageStudentsData from "./Pages/Admin/ManageStudentsData";
@@ -94,6 +96,8 @@ const App = () => {
           <Route path="createtest" element={<CreateTest />} />
           <Route path="tests" element={<TestList />} />
           <Route path="tests/:testId" element={<ViewEditTest />} />
+          <Route path="generate-questions" element={<GenerateQuestions />} />
+          <Route path="saved-questions" element={<SavedQuestions />} />
           <Route path="leaderboard" element={<Leaderboard />} />
           <Route path="manage-students" element={<ManageStudentsData />} />
           <Route path="settings" element={<Settings />} />
